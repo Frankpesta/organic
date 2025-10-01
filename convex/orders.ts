@@ -332,10 +332,23 @@ export const getOrderByPaymentIntentId = query({
 export const getOrderBySessionId = query({
   args: { sessionId: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const order = await ctx.db
       .query("orders")
       .filter((q) => q.eq(q.field("stripeSessionId"), args.sessionId))
       .first();
+
+    if (!order) return null;
+
+    // Get delivery method details if deliveryMethodId exists
+    let deliveryMethod = null;
+    if (order.deliveryMethodId) {
+      deliveryMethod = await ctx.db.get(order.deliveryMethodId);
+    }
+
+    return {
+      ...order,
+      deliveryMethod,
+    };
   },
 });
 

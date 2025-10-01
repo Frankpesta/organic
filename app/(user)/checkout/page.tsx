@@ -113,7 +113,6 @@ function CheckoutContent() {
       const subtotal = getTotalPrice();
       const pppResult = selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
         adjustedPrice: subtotal, 
-        originalPrice: subtotal, 
         currency: 'USD' 
       };
       const tax = pppResult.adjustedPrice * 0.08;
@@ -124,7 +123,6 @@ function CheckoutContent() {
         items: items.map(item => {
           const itemPPP = selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
             adjustedPrice: item.price, 
-            originalPrice: item.price, 
             currency: 'USD' 
           };
           return {
@@ -183,7 +181,6 @@ function CheckoutContent() {
           // Apply PPP pricing to Stripe checkout
           const itemPPP = selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
             adjustedPrice: item.price, 
-            originalPrice: item.price, 
             currency: 'USD' 
           };
           return {
@@ -531,7 +528,6 @@ function CheckoutContent() {
                   const subtotal = getTotalPrice();
                   const subtotalPPP = selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
                     adjustedPrice: subtotal, 
-                    originalPrice: subtotal, 
                     currency: 'USD' 
                   };
                   
@@ -547,7 +543,6 @@ function CheckoutContent() {
                         shipping = selectedMethod.price;
                         shippingPPP = selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
                           adjustedPrice: shipping, 
-                          originalPrice: shipping, 
                           currency: 'USD' 
                         };
                       }
@@ -557,7 +552,6 @@ function CheckoutContent() {
                     shipping = subtotal >= 50 ? 0 : 9.99;
                     shippingPPP = selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
                       adjustedPrice: shipping, 
-                      originalPrice: shipping, 
                       currency: 'USD' 
                     };
                   }
@@ -565,13 +559,11 @@ function CheckoutContent() {
                   const tax = subtotal * 0.08;
                   const taxPPP = selectedCountry ? calculatePPP(tax, selectedCountry) : { 
                     adjustedPrice: tax, 
-                    originalPrice: tax, 
                     currency: 'USD' 
                   };
                   const total = subtotal + shipping + tax;
                   const totalPPP = selectedCountry ? calculatePPP(total, selectedCountry) : { 
                     adjustedPrice: total, 
-                    originalPrice: total, 
                     currency: 'USD' 
                   };
                   
@@ -595,7 +587,7 @@ function CheckoutContent() {
                           {formatPrice(taxPPP.adjustedPrice, taxPPP.currency)}
                         </span>
                       </div>
-                      {subtotalPPP.adjustedPrice !== subtotalPPP.originalPrice && (
+                      {'originalPrice' in subtotalPPP && subtotalPPP.adjustedPrice !== subtotalPPP.originalPrice && (
                         <div className="text-xs text-muted-foreground bg-green-50 dark:bg-green-950 p-2 rounded">
                           <strong>Local Pricing:</strong> Adjusted for your region
                         </div>

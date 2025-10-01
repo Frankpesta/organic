@@ -105,7 +105,7 @@ export default function ProductDetailPage() {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-              {product.imageUrls && product.imageUrls.length > 0 ? (
+              {product.imageUrls && product.imageUrls.length > 0 && product.imageUrls[0] ? (
                 <Image
                   src={product.imageUrls[0]}
                   alt={product.name}
