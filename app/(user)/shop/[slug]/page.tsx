@@ -122,15 +122,17 @@ export default function ProductDetailPage() {
             {product.imageUrls && product.imageUrls.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
                 {product.imageUrls.slice(1, 5).map((image, index) => (
-                  <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                    <Image
-                      src={image}
-                      alt={`${product.name} ${index + 2}`}
-                      width={150}
-                      height={150}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  image && (
+                    <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                      <Image
+                        src={image}
+                        alt={`${product.name} ${index + 2}`}
+                        width={150}
+                        height={150}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )
                 ))}
               </div>
             )}
