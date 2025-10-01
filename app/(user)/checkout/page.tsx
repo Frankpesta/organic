@@ -398,7 +398,7 @@ function CheckoutContent() {
                       (method.countryCode === 'ALL' || method.countryCode === selectedCountry)
                     )
                     .map((method) => {
-                      const methodPrice = calculatePPP(method.price, selectedCountry);
+                      const methodPrice = calculatePPP(method.price, selectedCountry || 'US');
                       const isFree = method.freeShippingThreshold && getTotalPrice() >= method.freeShippingThreshold;
                       
                       return (

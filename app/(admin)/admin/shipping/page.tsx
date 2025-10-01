@@ -325,7 +325,7 @@ export default function AdminShippingPage() {
                     <p className="text-sm font-medium">Price</p>
                     <p className="text-sm text-muted-foreground">
                       ${method.price.toFixed(2)}
-                      {method.freeShippingThreshold > 0 && (
+                      {method.freeShippingThreshold && method.freeShippingThreshold > 0 && (
                         <span className="text-green-600 ml-1">
                           (Free over ${method.freeShippingThreshold})
                         </span>
