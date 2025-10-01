@@ -107,7 +107,7 @@ function PaymentFormInner({
             </label>
             <CountrySelector
               onCountryChange={handleCountryChange}
-              currentCountry={selectedCountry}
+              selectedCountry={selectedCountry}
               showPrice={true}
               samplePrice={amount}
             />
