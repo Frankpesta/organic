@@ -155,9 +155,9 @@ export default function ShopPage() {
             {filteredProducts.map((product) => (
               <div key={product._id} className="group">
                 <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4 relative">
-                  {product.imageUrls && product.imageUrls.length > 0 ? (
+                  {(product as any).imageUrls && (product as any).imageUrls.length > 0 ? (
                     <Image
-                      src={product.imageUrls[0]}
+                      src={(product as any).imageUrls[0]}
                       alt={product.name}
                       width={300}
                       height={300}
@@ -173,7 +173,7 @@ export default function ShopPage() {
                       productId={product._id}
                       name={product.name}
                       price={product.price}
-                      image={product.imageUrls?.[0] || ''}
+                      image={(product as any).imageUrls?.[0] || ''}
                       slug={product.slug}
                       size="sm"
                       variant="outline"
@@ -219,7 +219,7 @@ export default function ShopPage() {
                           productId: product._id,
                           name: product.name,
                           price: product.price,
-                          image: product.imageUrls?.[0] || '',
+                          image: (product as any).imageUrls?.[0] || '',
                           quantity: 1,
                         });
                       }}
@@ -237,9 +237,9 @@ export default function ShopPage() {
             {filteredProducts.map((product) => (
               <div key={product._id} className="flex items-center space-x-6 p-6 border border-border rounded-lg hover:shadow-md transition-shadow">
                 <div className="w-24 h-24 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                  {product.imageUrls && product.imageUrls.length > 0 ? (
+                  {(product as any).imageUrls && (product as any).imageUrls.length > 0 ? (
                     <Image
-                      src={product.imageUrls[0]}
+                      src={(product as any).imageUrls[0]}
                       alt={product.name}
                       width={96}
                       height={96}
@@ -295,7 +295,7 @@ export default function ShopPage() {
                         productId: product._id,
                         name: product.name,
                         price: product.price,
-                        image: product.imageUrls?.[0] || '',
+                        image: (product as any).imageUrls?.[0] || '',
                         quantity: 1,
                       });
                     }}
