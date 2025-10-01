@@ -89,7 +89,7 @@ export function ImageUpload({
 
         // Save file metadata
         await saveFileMetadata({
-          storageId,
+          storageId: storageId as any,
           filename: file.name,
           contentType: file.type,
           size: file.size,
@@ -150,7 +150,7 @@ export function ImageUpload({
     
     try {
       // Delete from Convex storage
-      await deleteFile({ storageId: imageToRemove.storageId });
+      await deleteFile({ storageId: imageToRemove.storageId as any });
       
       // Remove from local state
       const newImages = images.filter((_, i) => i !== index);
