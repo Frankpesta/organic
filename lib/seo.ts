@@ -92,7 +92,9 @@ export function generateMetadata(config: SEOConfig): Metadata {
   // Add product-specific structured data
   if (type === "product" && price) {
     metadata.other = {
-      ...metadata.other,
+      ...Object.fromEntries(
+        Object.entries(metadata.other || {}).filter(([_, value]) => value !== undefined)
+      ),
       "product:price:amount": price.toString(),
       "product:price:currency": currency,
       "product:availability": availability || "in stock",
