@@ -147,7 +147,8 @@ export async function sendWelcomeEmail({
     to,
     subject: "Welcome to Helen's Beauty Secret!",
     react: WelcomeEmail({
-      firstName,
+      customerName: firstName,
+      customerEmail: to,
     }),
   });
 }
