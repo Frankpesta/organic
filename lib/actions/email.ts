@@ -60,8 +60,24 @@ export async function sendOrderConfirmationEmailAction(data: {
       shipping: data.total * 0.10, // Estimate shipping (10% of total)
       tax: data.total * 0.05, // Estimate tax (5% of total)
       total: data.total,
-      shippingAddress: data.shippingAddress,
-      billingAddress: data.shippingAddress, // Use shipping address as billing for now
+      shippingAddress: {
+        firstName: data.shippingAddress.firstName,
+        lastName: data.shippingAddress.lastName,
+        address: data.shippingAddress.address1,
+        city: data.shippingAddress.city,
+        state: data.shippingAddress.state,
+        zipCode: data.shippingAddress.postalCode,
+        country: data.shippingAddress.country,
+      },
+      billingAddress: {
+        firstName: data.shippingAddress.firstName,
+        lastName: data.shippingAddress.lastName,
+        address: data.shippingAddress.address1,
+        city: data.shippingAddress.city,
+        state: data.shippingAddress.state,
+        zipCode: data.shippingAddress.postalCode,
+        country: data.shippingAddress.country,
+      },
     });
     return { success: result.success, error: result.error };
   } catch (error) {
