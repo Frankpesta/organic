@@ -109,7 +109,24 @@ export async function sendShippingConfirmationEmailAction(data: {
   };
 }) {
   try {
-    const result = await sendShippingConfirmationEmail(data);
+    const result = await sendShippingConfirmationEmail({
+      to: data.customerEmail,
+      orderNumber: data.orderNumber,
+      customerName: data.customerName,
+      trackingNumber: data.trackingNumber || "TBD",
+      carrier: data.carrier || "Standard Shipping",
+      estimatedDelivery: data.estimatedDelivery,
+      items: data.items,
+      shippingAddress: {
+        firstName: data.shippingAddress.firstName,
+        lastName: data.shippingAddress.lastName,
+        address: data.shippingAddress.address1,
+        city: data.shippingAddress.city,
+        state: data.shippingAddress.state,
+        zipCode: data.shippingAddress.postalCode,
+        country: data.shippingAddress.country,
+      },
+    });
     return { success: result.success, error: result.error };
   } catch (error) {
     console.error("Error sending shipping confirmation email:", error);
