@@ -138,7 +138,7 @@ export default function CategoriesPage() {
 
     try {
       await updateCategory({
-        id: editingCategory._id,
+        id: editingCategory._id as any,
         name: formData.name,
         slug: formData.slug,
         description: formData.description,
@@ -160,7 +160,7 @@ export default function CategoriesPage() {
     if (!confirm("Are you sure you want to delete this category?")) return;
 
     try {
-      await deleteCategory({ id: categoryId });
+      await deleteCategory({ id: categoryId as any });
       toast.success("Category deleted successfully");
     } catch (error) {
       toast.error("Failed to delete category");
@@ -171,7 +171,7 @@ export default function CategoriesPage() {
   const toggleStatus = async (category: { _id: string; isActive: boolean }) => {
     try {
       await updateCategory({
-        id: category._id,
+        id: category._id as any,
         isActive: !category.isActive,
       });
       toast.success(
