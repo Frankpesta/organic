@@ -126,13 +126,11 @@ export async function sendOrderConfirmationEmail({
       orderNumber,
       customerName,
       orderDate,
-      items,
-      subtotal,
-      shipping,
-      tax,
       total,
+      currency: "USD", // Default currency
+      items,
       shippingAddress,
-      billingAddress,
+      deliveryMethod: undefined, // No delivery method info available
     }),
   });
 }
