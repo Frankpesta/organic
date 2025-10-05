@@ -2,6 +2,7 @@
 
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { createCheckoutSession } from "@/lib/stripe";
 
 export async function createCheckoutSessionAction(data: {
@@ -35,7 +36,7 @@ export async function createCheckoutSessionAction(data: {
 
     // Update order with session ID
     await convex.mutation(api.orders.updateOrderWithSessionId, {
-      orderId: data.orderId as any,
+      orderId: data.orderId as any as Id<"orders">,
       sessionId: session.id,
     });
 
