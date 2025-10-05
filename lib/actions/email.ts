@@ -11,7 +11,10 @@ export async function sendWelcomeEmailAction(
   customerEmail: string,
 ) {
   try {
-    const result = await sendWelcomeEmail({ customerName, customerEmail });
+    const result = await sendWelcomeEmail({ 
+      to: customerEmail, 
+      firstName: customerName 
+    });
     return { success: result.success, error: result.error };
   } catch (error) {
     console.error("Error sending welcome email:", error);
