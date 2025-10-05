@@ -13,7 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await sendWelcomeEmail(data);
+    const result = await sendWelcomeEmail({
+      to: data.customerEmail,
+      firstName: data.customerName
+    });
 
     if (!result.success) {
       return NextResponse.json(
