@@ -135,6 +135,7 @@ function CheckoutContent() {
           : {
               adjustedPrice: subtotal,
               currency: "USD",
+              exchangeRate: 1.0,
             };
       const tax = pppResult.adjustedPrice * 0.08;
       const total = pppResult.adjustedPrice + shipping + tax;
@@ -192,6 +193,7 @@ function CheckoutContent() {
         discount: 0,
         total,
         currency: pppResult.currency.toLowerCase(),
+        exchangeRate: pppResult.exchangeRate, // Pass the exchange rate from PPP calculation
         notes: orderNotes,
         deliveryMethodId: selectedDeliveryMethod,
       });

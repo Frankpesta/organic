@@ -32,6 +32,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
 export default function AdminDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -250,64 +258,96 @@ export default function AdminDashboard() {
             <CardDescription>Latest orders from your customers</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentOrders.map((order) => (
-                <div
-                  key={order._id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-bold text-gray-600">
-                        {order.user?.firstName?.[0] || "U"}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {order.user?.firstName} {order.user?.lastName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {order.user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold">
-                      ${order.total.toFixed(2)}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      #{order.orderNumber}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        order.status === "delivered"
-                          ? "bg-green-100 text-green-800"
-                          : order.status === "shipped"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "processing"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : order.status === "pending"
-                                ? "bg-gray-100 text-gray-800"
-                                : "bg-red-100 text-red-800"
-                      }`}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order #</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentOrders.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={6}
+                      className="text-center text-muted-foreground py-8"
                     >
-                      {order.status.charAt(0).toUpperCase() +
-                        order.status.slice(1)}
-                    </span>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleViewOrder(order)}
-                  >
-                    <Eye className="h-4 w-4 mr-1" />
-                    View
-                  </Button>
-                </div>
-              ))}
-            </div>
+                      No recent orders found.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  recentOrders.map((order) => (
+                    <TableRow key={order._id}>
+                      <TableCell className="font-medium">
+                        #{order.orderNumber}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                            <span className="text-sm font-medium">
+                              {order.user?.firstName?.[0] || "U"}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-medium">
+                              {order.user?.firstName} {order.user?.lastName}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {order.user?.email}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(order._creationTime).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            order.status === "delivered"
+                              ? "default"
+                              : order.status === "shipped"
+                                ? "secondary"
+                                : "outline"
+                          }
+                          className={
+                            order.status === "delivered"
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : order.status === "shipped"
+                                ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                                : order.status === "processing"
+                                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                  : order.status === "pending"
+                                    ? "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          }
+                        >
+                          {order.status.charAt(0).toUpperCase() +
+                            order.status.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        ${order.total.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewOrder(order)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>

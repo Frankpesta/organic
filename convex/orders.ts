@@ -342,7 +342,21 @@ export const getOrderStats = query({
       refunded: orders.filter((o) => o.status === "refunded").length,
       totalRevenue: orders
         .filter((o) => o.paymentStatus === "paid")
-        .reduce((sum, o) => sum + o.total, 0),
+        .reduce((sum, order) => {
+          // If order is in USD, use total as-is
+          if (order.currency.toLowerCase() === 'usd') {
+            return sum + order.total;
+          }
+          
+          // If order has exchange rate, convert to USD
+          if (order.exchangeRate && order.exchangeRate > 0) {
+            return sum + (order.total / order.exchangeRate);
+          }
+          
+          // Fallback: assume it's already USD if no exchange rate
+          console.warn(`Order ${order.orderNumber} has currency ${order.currency} but no exchange rate. Using total as-is.`);
+          return sum + order.total;
+        }, 0),
       averageOrderValue: 0,
     };
 

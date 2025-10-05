@@ -26,8 +26,22 @@ export const getDashboardStats = query({
       ctx.db.query("orderItems").collect(),
     ]);
 
-    // Calculate revenue
-    const revenue = totalRevenue.reduce((sum, order) => sum + order.total, 0);
+    // Calculate revenue - convert all currencies to USD
+    const revenue = totalRevenue.reduce((sum, order) => {
+      // If order is in USD, use total as-is
+      if (order.currency.toLowerCase() === 'usd') {
+        return sum + order.total;
+      }
+      
+      // If order has exchange rate, convert to USD
+      if (order.exchangeRate && order.exchangeRate > 0) {
+        return sum + (order.total / order.exchangeRate);
+      }
+      
+      // Fallback: assume it's already USD if no exchange rate
+      console.warn(`Order ${order.orderNumber} has currency ${order.currency} but no exchange rate. Using total as-is.`);
+      return sum + order.total;
+    }, 0);
 
     // Calculate order status breakdown
     const orderStats = {
