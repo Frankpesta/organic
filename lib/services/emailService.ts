@@ -178,10 +178,11 @@ export async function sendShippingConfirmationEmail({
   shippingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
 }) {
