@@ -104,10 +104,11 @@ export async function sendShippingConfirmationEmailAction(data: {
       shippingAddress: {
         firstName: data.shippingAddress.firstName,
         lastName: data.shippingAddress.lastName,
-        address: data.shippingAddress.address1,
+        address1: data.shippingAddress.address1,
+        address2: data.shippingAddress.address2,
         city: data.shippingAddress.city,
         state: data.shippingAddress.state,
-        zipCode: data.shippingAddress.postalCode,
+        postalCode: data.shippingAddress.postalCode,
         country: data.shippingAddress.country,
       },
     });
