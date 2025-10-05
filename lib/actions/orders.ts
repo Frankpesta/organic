@@ -138,13 +138,15 @@ export async function createOrder(formData: {
       // Send order confirmation email
       try {
         await sendOrderConfirmationEmail({
+          to: convexUser.email,
           orderNumber: order.orderNumber,
           customerName: `${formData.shippingAddress.firstName} ${formData.shippingAddress.lastName}`,
-          customerEmail: convexUser.email,
           orderDate: new Date().toLocaleDateString(),
-          total: formData.total,
-          currency: formData.currency,
           items: productDetails,
+          subtotal: formData.total * 0.85, // Estimate subtotal (85% of total)
+          shipping: formData.total * 0.10, // Estimate shipping (10% of total)
+          tax: formData.total * 0.05, // Estimate tax (5% of total)
+          total: formData.total,
           shippingAddress: {
             firstName: formData.shippingAddress.firstName,
             lastName: formData.shippingAddress.lastName,
@@ -154,7 +156,15 @@ export async function createOrder(formData: {
             zipCode: formData.shippingAddress.postalCode,
             country: formData.shippingAddress.country,
           },
-          deliveryMethod,
+          billingAddress: {
+            firstName: formData.shippingAddress.firstName,
+            lastName: formData.shippingAddress.lastName,
+            address: formData.shippingAddress.address1,
+            city: formData.shippingAddress.city,
+            state: formData.shippingAddress.state,
+            zipCode: formData.shippingAddress.postalCode,
+            country: formData.shippingAddress.country,
+          },
         });
       } catch (emailError) {
         console.error("Failed to send order confirmation email:", emailError);
