@@ -24,6 +24,7 @@ export function Navbar() {
   const { getWishlistCount } = useWishlistStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   // Handle scroll effect
   useEffect(() => {
@@ -96,9 +97,6 @@ export function Navbar() {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
-              <Search className="h-4 w-4" />
-            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -132,10 +130,10 @@ export function Navbar() {
 
             <ThemeToggle />
 
-            {/* User Menu */}
-            <div className="flex items-center space-x-2">
+            {/* User Menu - Desktop Only */}
+            <div className="hidden lg:flex items-center space-x-2">
               <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="hidden sm:flex">
+                <Button variant="ghost" size="sm">
                   Dashboard
                 </Button>
               </Link>
@@ -150,7 +148,7 @@ export function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
@@ -165,36 +163,42 @@ export function Navbar() {
                   <Link
                     href="/shop"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     Shop
                   </Link>
                   <Link
                     href="/about"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     About
                   </Link>
                   <Link
                     href="/ingredients"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     Ingredients
                   </Link>
                   <Link
                     href="/sustainability"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     Sustainability
                   </Link>
                   <Link
                     href="/blog"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     Blog
                   </Link>
                   <Link
                     href="/dashboard"
                     className="text-lg font-medium hover:text-green-600"
+                    onClick={() => setIsSheetOpen(false)}
                   >
                     Dashboard
                   </Link>
@@ -204,6 +208,20 @@ export function Navbar() {
                       <span className="text-sm font-medium">Theme</span>
                       <ThemeToggle />
                     </div>
+                    
+                    {/* User Menu for Mobile */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Account</span>
+                      <UserButton
+                        afterSignOutUrl="/"
+                        appearance={{
+                          elements: {
+                            avatarBox: "h-8 w-8",
+                          },
+                        }}
+                      />
+                    </div>
+                    
                     <div className="flex items-center space-x-2">
                       <SignInButton mode="modal">
                         <Button variant="outline" size="sm">
