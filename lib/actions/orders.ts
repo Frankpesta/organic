@@ -145,7 +145,15 @@ export async function createOrder(formData: {
           total: formData.total,
           currency: formData.currency,
           items: productDetails,
-          shippingAddress: formData.shippingAddress,
+          shippingAddress: {
+            firstName: formData.shippingAddress.firstName,
+            lastName: formData.shippingAddress.lastName,
+            address: formData.shippingAddress.address1,
+            city: formData.shippingAddress.city,
+            state: formData.shippingAddress.state,
+            zipCode: formData.shippingAddress.postalCode,
+            country: formData.shippingAddress.country,
+          },
           deliveryMethod,
         });
       } catch (emailError) {
