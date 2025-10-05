@@ -102,7 +102,7 @@ export const createOrUpdateUser = mutation({
       if (newUser && newUser.role === "customer") {
         try {
           // Import and call the email function
-          const { sendWelcomeEmail } = await import("@/lib/email");
+          const { sendWelcomeEmail } = await import("../lib/services/emailService");
           await sendWelcomeEmail({
             customerName: newUser.firstName || newUser.email,
             customerEmail: newUser.email,
