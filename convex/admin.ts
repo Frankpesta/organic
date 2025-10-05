@@ -65,10 +65,10 @@ export const getDashboardStats = query({
         const product = await ctx.db.get(item.productId as any);
         return {
           ...item,
-          product: product
+          product: product && 'name' in product
             ? {
-                name: product.name || "Unknown Product",
-                images: product.images || [],
+                name: (product as any).name || "Unknown Product",
+                images: (product as any).images || [],
               }
             : null,
         };
