@@ -104,8 +104,8 @@ export const createOrUpdateUser = mutation({
           // Import and call the email function
           const { sendWelcomeEmail } = await import("../lib/services/emailService");
           await sendWelcomeEmail({
-            customerName: newUser.firstName || newUser.email,
-            customerEmail: newUser.email,
+            to: newUser.email,
+            firstName: newUser.firstName || newUser.email,
           });
         } catch (emailError) {
           console.error("Failed to send welcome email:", emailError);
