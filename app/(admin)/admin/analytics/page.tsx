@@ -1,45 +1,50 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Calendar,
+  DollarSign,
+  Download,
+  Package,
+  RefreshCw,
+  ShoppingCart,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  AreaChart,
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Area,
-  BarChart,
+  AreaChart,
   Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  ChartContainer,
+  ChartLegend,
+  ChartTooltip,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ChartContainer,
-  ChartTooltip,
-  ChartLegend,
 } from "@/components/ui/chart";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  ShoppingCart, 
-  Users, 
-  Package,
-  Calendar,
-  Download,
-  RefreshCw
-} from "lucide-react";
-import { 
-  generateRevenueData, 
-  generateOrderTrendsData, 
-  generateTopProductsData, 
+import { api } from "@/convex/_generated/api";
+import {
+  generateCustomerGrowthData,
   generateOrderStatusData,
-  generateCustomerGrowthData 
+  generateOrderTrendsData,
+  generateRevenueData,
+  generateTopProductsData,
 } from "@/lib/analytics-data";
 
 export default function AnalyticsPage() {
@@ -77,7 +82,7 @@ export default function AnalyticsPage() {
   const orderTrendsData = generateOrderTrendsData();
   const topProductsData = generateTopProductsData(topProducts);
   const orderStatusData = generateOrderStatusData(orderStats);
-  const customerGrowthData = generateCustomerGrowthData();
+  const _customerGrowthData = generateCustomerGrowthData();
 
   // Chart configurations
   const revenueConfig = {
@@ -118,7 +123,9 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Analytics</h1>
-          <p className="text-muted-foreground">Track your business performance and insights</p>
+          <p className="text-muted-foreground">
+            Track your business performance and insights
+          </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
@@ -140,7 +147,9 @@ export default function AnalyticsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              ${stats.totalRevenue.toLocaleString()}
+            </div>
             <div className="flex items-center text-xs text-green-600">
               <TrendingUp className="h-3 w-3 mr-1" />
               +12.5% from last month
@@ -197,7 +206,9 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Revenue Overview</CardTitle>
-            <CardDescription>Monthly revenue for the past 6 months</CardDescription>
+            <CardDescription>
+              Monthly revenue for the past 6 months
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={revenueConfig} className="h-80">
@@ -282,8 +293,8 @@ export default function AnalyticsPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {orderStatusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  {orderStatusData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip content={<ChartTooltip />} />
@@ -300,21 +311,30 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Top Selling Products</CardTitle>
-            <CardDescription>Best performing products this month</CardDescription>
+            <CardDescription>
+              Best performing products this month
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {topProducts.slice(0, 5).map((product, index) => (
-                <div key={product.productId} className="flex items-center justify-between">
+                <div
+                  key={product.productId}
+                  className="flex items-center justify-between"
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
-                      <span className="text-sm font-bold text-foreground">#{index + 1}</span>
+                      <span className="text-sm font-bold text-foreground">
+                        #{index + 1}
+                      </span>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        {product.product?.name || 'Unknown Product'}
+                        {product.product?.name || "Unknown Product"}
                       </p>
-                      <p className="text-xs text-muted-foreground">{product.totalSold} sold</p>
+                      <p className="text-xs text-muted-foreground">
+                        {product.totalSold} sold
+                      </p>
                     </div>
                   </div>
                   <span className="text-sm font-bold text-green-600">
@@ -340,61 +360,92 @@ export default function AnalyticsPage() {
                   <span className="text-sm font-medium">Pending</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-bold">{orderStats.pending}</span>
+                  <span className="text-sm font-bold">
+                    {orderStats.pending}
+                  </span>
                   <span className="text-xs text-muted-foreground">
-                    ({((orderStats.pending / stats.totalOrders) * 100).toFixed(1)}%)
+                    (
+                    {((orderStats.pending / stats.totalOrders) * 100).toFixed(
+                      1,
+                    )}
+                    %)
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   <span className="text-sm font-medium">Processing</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-bold">{orderStats.processing}</span>
+                  <span className="text-sm font-bold">
+                    {orderStats.processing}
+                  </span>
                   <span className="text-xs text-muted-foreground">
-                    ({((orderStats.processing / stats.totalOrders) * 100).toFixed(1)}%)
+                    (
+                    {(
+                      (orderStats.processing / stats.totalOrders) *
+                      100
+                    ).toFixed(1)}
+                    %)
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                   <span className="text-sm font-medium">Shipped</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-bold">{orderStats.shipped}</span>
+                  <span className="text-sm font-bold">
+                    {orderStats.shipped}
+                  </span>
                   <span className="text-xs text-muted-foreground">
-                    ({((orderStats.shipped / stats.totalOrders) * 100).toFixed(1)}%)
+                    (
+                    {((orderStats.shipped / stats.totalOrders) * 100).toFixed(
+                      1,
+                    )}
+                    %)
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className="text-sm font-medium">Delivered</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-bold">{orderStats.delivered}</span>
+                  <span className="text-sm font-bold">
+                    {orderStats.delivered}
+                  </span>
                   <span className="text-xs text-muted-foreground">
-                    ({((orderStats.delivered / stats.totalOrders) * 100).toFixed(1)}%)
+                    (
+                    {((orderStats.delivered / stats.totalOrders) * 100).toFixed(
+                      1,
+                    )}
+                    %)
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                   <span className="text-sm font-medium">Cancelled</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-bold">{orderStats.cancelled}</span>
+                  <span className="text-sm font-bold">
+                    {orderStats.cancelled}
+                  </span>
                   <span className="text-xs text-muted-foreground">
-                    ({((orderStats.cancelled / stats.totalOrders) * 100).toFixed(1)}%)
+                    (
+                    {((orderStats.cancelled / stats.totalOrders) * 100).toFixed(
+                      1,
+                    )}
+                    %)
                   </span>
                 </div>
               </div>

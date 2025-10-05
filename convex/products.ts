@@ -22,30 +22,31 @@ export const getProducts = query({
     }
 
     if (args.search) {
-      query = query.filter((q) => 
+      query = query.filter((q) =>
         q.or(
           q.eq(q.field("name"), args.search),
           q.eq(q.field("description"), args.search),
-          q.eq(q.field("shortDescription"), args.search)
-        )
+          q.eq(q.field("shortDescription"), args.search),
+        ),
       );
     }
 
     // Always filter for active products
     query = query.filter((q) => q.eq(q.field("isActive"), true));
 
-    const products = await query
-      .order("desc")
-      .take(args.limit || 20);
+    const products = await query.order("desc").take(args.limit || 20);
 
     // Convert storage IDs to URLs for each product
     const productsWithUrls = await Promise.all(
       products.map(async (product) => {
         let imageUrls: (string | null)[] = [];
-        
+
         if (product.images && product.images.length > 0) {
           // Check if images are storage IDs or URLs (backward compatibility)
-          if (typeof product.images[0] === 'string' && product.images[0].startsWith('http')) {
+          if (
+            typeof product.images[0] === "string" &&
+            product.images[0].startsWith("http")
+          ) {
             // Old format: direct URLs
             imageUrls = product.images as string[];
           } else {
@@ -56,19 +57,23 @@ export const getProducts = query({
                   const url = await ctx.storage.getUrl(storageId);
                   return url;
                 } catch (error) {
-                  console.error("Error getting URL for storage ID:", storageId, error);
+                  console.error(
+                    "Error getting URL for storage ID:",
+                    storageId,
+                    error,
+                  );
                   return null;
                 }
-              })
+              }),
             );
           }
         }
-        
+
         return {
           ...product,
           imageUrls: imageUrls.filter(Boolean), // Remove null URLs
         };
-      })
+      }),
     );
 
     return productsWithUrls;
@@ -88,10 +93,13 @@ export const getProductBySlug = query({
 
     // Convert storage IDs to URLs for the product
     let imageUrls: (string | null)[] = [];
-    
+
     if (product.images && product.images.length > 0) {
       // Check if images are storage IDs or URLs (backward compatibility)
-      if (typeof product.images[0] === 'string' && product.images[0].startsWith('http')) {
+      if (
+        typeof product.images[0] === "string" &&
+        product.images[0].startsWith("http")
+      ) {
         // Old format: direct URLs
         imageUrls = product.images as string[];
       } else {
@@ -102,10 +110,14 @@ export const getProductBySlug = query({
               const url = await ctx.storage.getUrl(storageId);
               return url;
             } catch (error) {
-              console.error("Error getting URL for storage ID:", storageId, error);
+              console.error(
+                "Error getting URL for storage ID:",
+                storageId,
+                error,
+              );
               return null;
             }
-          })
+          }),
         );
       }
     }
@@ -148,10 +160,13 @@ export const getProduct = query({
 
     // Convert storage IDs to URLs for the product
     let imageUrls: (string | null)[] = [];
-    
+
     if (product.images && product.images.length > 0) {
       // Check if images are storage IDs or URLs (backward compatibility)
-      if (typeof product.images[0] === 'string' && product.images[0].startsWith('http')) {
+      if (
+        typeof product.images[0] === "string" &&
+        product.images[0].startsWith("http")
+      ) {
         // Old format: direct URLs
         imageUrls = product.images as string[];
       } else {
@@ -162,10 +177,14 @@ export const getProduct = query({
               const url = await ctx.storage.getUrl(storageId);
               return url;
             } catch (error) {
-              console.error("Error getting URL for storage ID:", storageId, error);
+              console.error(
+                "Error getting URL for storage ID:",
+                storageId,
+                error,
+              );
               return null;
             }
-          })
+          }),
         );
       }
     }
@@ -238,11 +257,13 @@ export const createProduct = mutation({
     isFeatured: v.boolean(),
     inventory: v.number(),
     weight: v.optional(v.number()),
-    dimensions: v.optional(v.object({
-      length: v.number(),
-      width: v.number(),
-      height: v.number(),
-    })),
+    dimensions: v.optional(
+      v.object({
+        length: v.number(),
+        width: v.number(),
+        height: v.number(),
+      }),
+    ),
     ingredients: v.array(v.string()),
     skinTypes: v.array(v.string()),
     benefits: v.array(v.string()),
@@ -253,7 +274,7 @@ export const createProduct = mutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
-    
+
     return await ctx.db.insert("products", {
       ...args,
       inStock: args.inventory > 0,
@@ -280,11 +301,13 @@ export const updateProduct = mutation({
     isFeatured: v.optional(v.boolean()),
     inventory: v.optional(v.number()),
     weight: v.optional(v.number()),
-    dimensions: v.optional(v.object({
-      length: v.number(),
-      width: v.number(),
-      height: v.number(),
-    })),
+    dimensions: v.optional(
+      v.object({
+        length: v.number(),
+        width: v.number(),
+        height: v.number(),
+      }),
+    ),
     ingredients: v.optional(v.array(v.string())),
     skinTypes: v.optional(v.array(v.string())),
     benefits: v.optional(v.array(v.string())),
@@ -295,7 +318,7 @@ export const updateProduct = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    
+
     // Update inventory affects inStock status
     if (updates.inventory !== undefined) {
       (updates as any).inStock = updates.inventory > 0;
@@ -340,13 +363,15 @@ export const getProductReviews = query({
         const user = await ctx.db.get(review.userId);
         return {
           ...review,
-          user: user ? {
-            firstName: (user as any).firstName,
-            lastName: (user as any).lastName,
-            imageUrl: (user as any).imageUrl,
-          } : null,
+          user: user
+            ? {
+                firstName: (user as any).firstName,
+                lastName: (user as any).lastName,
+                imageUrl: (user as any).imageUrl,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     return reviewsWithUsers;
@@ -364,7 +389,7 @@ export const addReview = mutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
-    
+
     return await ctx.db.insert("reviews", {
       ...args,
       isVerified: true, // Assuming user has purchased the product

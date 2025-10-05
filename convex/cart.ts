@@ -31,14 +31,16 @@ export const getCart = query({
             inStock: product.inStock,
             inventory: product.inventory,
           },
-          variant: variant ? {
-            _id: variant._id,
-            name: variant.name,
-            price: variant.price,
-            attributes: variant.attributes,
-          } : null,
+          variant: variant
+            ? {
+                _id: variant._id,
+                name: variant.name,
+                price: variant.price,
+                attributes: variant.attributes,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     return cartWithProducts.filter(Boolean);
@@ -118,9 +120,7 @@ export const clearCart = mutation({
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
 
-    await Promise.all(
-      cartItems.map(item => ctx.db.delete(item._id))
-    );
+    await Promise.all(cartItems.map((item) => ctx.db.delete(item._id)));
 
     return true;
   },

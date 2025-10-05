@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation } from "./_generated/server";
 
 // One-time script to promote franklinolisaemeka3@gmail.com to admin
 // No arguments needed - hardcoded for simplicity
@@ -7,14 +7,16 @@ export const promoteMyself = mutation({
   handler: async (ctx) => {
     const email = "franklinolisaemeka3@gmail.com";
     console.log(`Looking for user with email: ${email}`);
-    
+
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("email"), email))
       .first();
 
     if (!user) {
-      throw new Error(`User with email ${email} not found. Please sign in to the main site first to create your account.`);
+      throw new Error(
+        `User with email ${email} not found. Please sign in to the main site first to create your account.`,
+      );
     }
 
     if (user.role === "admin") {
@@ -36,14 +38,16 @@ export const promoteUserByEmail = mutation({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     console.log(`Looking for user with email: ${args.email}`);
-    
+
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("email"), args.email))
       .first();
 
     if (!user) {
-      throw new Error(`User with email ${args.email} not found. Please sign in first.`);
+      throw new Error(
+        `User with email ${args.email} not found. Please sign in first.`,
+      );
     }
 
     if (user.role === "admin") {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
+import { useEffect } from "react";
 import { api } from "@/convex/_generated/api";
 
 export function UserSync() {
@@ -18,7 +18,7 @@ export function UserSync() {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         imageUrl: user.imageUrl || "",
-      }).catch(error => {
+      }).catch((error) => {
         console.error("Failed to sync user:", error);
       });
     }

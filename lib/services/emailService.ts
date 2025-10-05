@@ -1,8 +1,8 @@
-import React from 'react';
-import { sendEmail } from '@/lib/resend';
-import { OrderConfirmationEmail } from '@/emails/order-confirmation';
-import { WelcomeEmail } from '@/emails/welcome';
-import { ShippingConfirmationEmail } from '@/emails/shipping-confirmation';
+import React from "react";
+import { OrderConfirmationEmail } from "@/emails/order-confirmation";
+import { ShippingConfirmationEmail } from "@/emails/shipping-confirmation";
+import { WelcomeEmail } from "@/emails/welcome";
+import { sendEmail } from "@/lib/resend";
 
 // Type definitions
 export interface WelcomeEmailData {
@@ -143,7 +143,7 @@ export async function sendWelcomeEmail({
 }) {
   return await sendEmail({
     to,
-    subject: 'Welcome to Helen\'s Beauty Secret!',
+    subject: "Welcome to Helen's Beauty Secret!",
     react: WelcomeEmail({
       firstName,
     }),
@@ -213,26 +213,38 @@ export async function sendNotificationEmail({
 }) {
   const NotificationEmail = () => {
     return React.createElement(
-      'div',
-      { style: { fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' } },
-      React.createElement('h2', { style: { color: '#16a34a' } }, "Helen's Beauty Secret"),
-      React.createElement('p', null, message),
-      actionUrl && actionText && React.createElement(
-        'a',
-        {
-          href: actionUrl,
-          style: {
-            backgroundColor: '#16a34a',
-            color: 'white',
-            padding: '12px 24px',
-            textDecoration: 'none',
-            borderRadius: '6px',
-            display: 'inline-block',
-            marginTop: '16px'
-          }
+      "div",
+      {
+        style: {
+          fontFamily: "Arial, sans-serif",
+          maxWidth: "600px",
+          margin: "0 auto",
         },
-        actionText
-      )
+      },
+      React.createElement(
+        "h2",
+        { style: { color: "#16a34a" } },
+        "Helen's Beauty Secret",
+      ),
+      React.createElement("p", null, message),
+      actionUrl &&
+        actionText &&
+        React.createElement(
+          "a",
+          {
+            href: actionUrl,
+            style: {
+              backgroundColor: "#16a34a",
+              color: "white",
+              padding: "12px 24px",
+              textDecoration: "none",
+              borderRadius: "6px",
+              display: "inline-block",
+              marginTop: "16px",
+            },
+          },
+          actionText,
+        ),
     );
   };
 

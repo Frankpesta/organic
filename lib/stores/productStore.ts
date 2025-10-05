@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export interface Product {
   _id: string;
@@ -31,8 +31,8 @@ interface ProductStore {
   searchTerm: string;
   selectedCategory: string;
   sortBy: string;
-  viewMode: 'grid' | 'list';
-  
+  viewMode: "grid" | "list";
+
   setProducts: (products: Product[]) => void;
   setFeaturedProducts: (products: Product[]) => void;
   setCategories: (categories: any[]) => void;
@@ -40,8 +40,8 @@ interface ProductStore {
   setSearchTerm: (term: string) => void;
   setSelectedCategory: (category: string) => void;
   setSortBy: (sort: string) => void;
-  setViewMode: (mode: 'grid' | 'list') => void;
-  
+  setViewMode: (mode: "grid" | "list") => void;
+
   getFilteredProducts: () => Product[];
 }
 
@@ -50,11 +50,11 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   featuredProducts: [],
   categories: [],
   loading: false,
-  searchTerm: '',
-  selectedCategory: '',
-  sortBy: 'featured',
-  viewMode: 'grid',
-  
+  searchTerm: "",
+  selectedCategory: "",
+  sortBy: "featured",
+  viewMode: "grid",
+
   setProducts: (products) => set({ products }),
   setFeaturedProducts: (products) => set({ featuredProducts: products }),
   setCategories: (categories) => set({ categories }),
@@ -63,38 +63,42 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
   setSortBy: (sortBy) => set({ sortBy }),
   setViewMode: (viewMode) => set({ viewMode }),
-  
+
   getFilteredProducts: () => {
     const { products, searchTerm, selectedCategory, sortBy } = get();
-    
-    let filtered = products.filter(product => product.isActive);
-    
+
+    let filtered = products.filter((product) => product.isActive);
+
     if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.ingredients.some(ingredient =>
-          ingredient.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      filtered = filtered.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          product.ingredients.some((ingredient) =>
+            ingredient.toLowerCase().includes(searchTerm.toLowerCase()),
+          ),
       );
     }
-    
+
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.categoryId === selectedCategory);
+      filtered = filtered.filter(
+        (product) => product.categoryId === selectedCategory,
+      );
     }
-    
+
     // Sort products
     switch (sortBy) {
-      case 'price-low':
+      case "price-low":
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case 'price-high':
+      case "price-high":
         filtered.sort((a, b) => b.price - a.price);
         break;
-      case 'newest':
+      case "newest":
         filtered.sort((a, b) => b.createdAt - a.createdAt);
         break;
-      case 'featured':
       default:
         filtered.sort((a, b) => {
           if (a.isFeatured && !b.isFeatured) return -1;
@@ -103,7 +107,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
         });
         break;
     }
-    
+
     return filtered;
   },
 }));

@@ -8,12 +8,14 @@ export const sendOrderConfirmationEmail = action({
     orderNumber: v.string(),
     customerName: v.string(),
     orderDate: v.string(),
-    items: v.array(v.object({
-      name: v.string(),
-      quantity: v.number(),
-      price: v.number(),
-      image: v.optional(v.string()),
-    })),
+    items: v.array(
+      v.object({
+        name: v.string(),
+        quantity: v.number(),
+        price: v.number(),
+        image: v.optional(v.string()),
+      }),
+    ),
     subtotal: v.number(),
     shipping: v.number(),
     tax: v.number(),
@@ -39,13 +41,16 @@ export const sendOrderConfirmationEmail = action({
   },
   handler: async (ctx, args) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/emails/order-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/emails/order-confirmation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(args),
         },
-        body: JSON.stringify(args),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,8 +59,8 @@ export const sendOrderConfirmationEmail = action({
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error('Failed to send order confirmation email:', error);
-      throw new Error('Failed to send order confirmation email');
+      console.error("Failed to send order confirmation email:", error);
+      throw new Error("Failed to send order confirmation email");
     }
   },
 });
@@ -68,13 +73,16 @@ export const sendWelcomeEmail = action({
   },
   handler: async (ctx, args) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/emails/welcome`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/emails/welcome`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(args),
         },
-        body: JSON.stringify(args),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -83,8 +91,8 @@ export const sendWelcomeEmail = action({
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error('Failed to send welcome email:', error);
-      throw new Error('Failed to send welcome email');
+      console.error("Failed to send welcome email:", error);
+      throw new Error("Failed to send welcome email");
     }
   },
 });
@@ -98,11 +106,13 @@ export const sendShippingConfirmationEmail = action({
     trackingNumber: v.string(),
     carrier: v.string(),
     estimatedDelivery: v.string(),
-    items: v.array(v.object({
-      name: v.string(),
-      quantity: v.number(),
-      image: v.optional(v.string()),
-    })),
+    items: v.array(
+      v.object({
+        name: v.string(),
+        quantity: v.number(),
+        image: v.optional(v.string()),
+      }),
+    ),
     shippingAddress: v.object({
       firstName: v.string(),
       lastName: v.string(),
@@ -115,13 +125,16 @@ export const sendShippingConfirmationEmail = action({
   },
   handler: async (ctx, args) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/emails/shipping-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/emails/shipping-confirmation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(args),
         },
-        body: JSON.stringify(args),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -130,8 +143,8 @@ export const sendShippingConfirmationEmail = action({
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error('Failed to send shipping confirmation email:', error);
-      throw new Error('Failed to send shipping confirmation email');
+      console.error("Failed to send shipping confirmation email:", error);
+      throw new Error("Failed to send shipping confirmation email");
     }
   },
 });

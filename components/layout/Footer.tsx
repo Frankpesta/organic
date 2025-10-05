@@ -1,5 +1,5 @@
+import { Heart, Leaf } from "lucide-react";
 import Link from "next/link";
-import { Leaf, Heart } from "lucide-react";
 
 export function Footer() {
   return (
@@ -11,17 +11,49 @@ export function Footer() {
             <div className="w-6 h-6 bg-green-600 rounded-md flex items-center justify-center">
               <Leaf className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-bold text-foreground">Helen's Beauty Secret</span>
+            <span className="text-lg font-bold text-foreground">
+              Helen's Beauty Secret
+            </span>
           </div>
 
           {/* Links */}
           <div className="flex flex-wrap items-center justify-center space-x-6 text-sm text-muted-foreground">
-            <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
-            <Link href="/shop" className="hover:text-foreground transition-colors">Shop</Link>
-            <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-            <Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link>
-            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link
+              href="/about"
+              className="hover:text-foreground transition-colors"
+            >
+              About
+            </Link>
+            <Link
+              href="/shop"
+              className="hover:text-foreground transition-colors"
+            >
+              Shop
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-foreground transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/faq"
+              className="hover:text-foreground transition-colors"
+            >
+              FAQ
+            </Link>
+            <Link
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-foreground transition-colors"
+            >
+              Terms
+            </Link>
           </div>
 
           {/* Copyright */}

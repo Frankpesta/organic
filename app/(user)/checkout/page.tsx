@@ -1,41 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useCartStore } from "@/lib/stores/cartStore";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { calculatePPP, formatPrice } from "@/lib/ppp";
-import { PPPProvider, usePPP } from "@/lib/contexts/PPPContext";
-import { createOrder } from "@/lib/actions/orders";
-import { createCheckoutSessionAction } from "@/lib/actions/stripe";
-import { PPTToggle } from "@/components/PPPToggle";
-import { 
-  CreditCard, 
-  Truck, 
-  Shield, 
-  Lock,
+import {
+  AlertCircle,
   ArrowLeft,
   CheckCircle,
-  AlertCircle,
-  Loader2,
   Clock,
-  Package
+  CreditCard,
+  Loader2,
+  Lock,
+  Package,
+  Shield,
+  Truck,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PPTToggle } from "@/components/PPPToggle";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { api } from "@/convex/_generated/api";
+import { createOrder } from "@/lib/actions/orders";
+import { createCheckoutSessionAction } from "@/lib/actions/stripe";
+import { PPPProvider, usePPP } from "@/lib/contexts/PPPContext";
+import { calculatePPP, formatPrice } from "@/lib/ppp";
+import { useCartStore } from "@/lib/stores/cartStore";
 
 function CheckoutContent() {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const { user, isLoaded } = useUser();
   const router = useRouter();
-  const { selectedCountry, isPPPenabled, setPPPenabled, isLoading: pppLoading } = usePPP();
-  
+  const {
+    selectedCountry,
+    isPPPenabled,
+    setPPPenabled,
+    isLoading: pppLoading,
+  } = usePPP();
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
     firstName: "",
@@ -46,7 +51,7 @@ function CheckoutContent() {
     city: "",
     state: "",
     zipCode: "",
-    country: "US"
+    country: "US",
   });
   const [billingInfo, setBillingInfo] = useState({
     sameAsShipping: true,
@@ -57,45 +62,46 @@ function CheckoutContent() {
     state: "",
     zipCode: "",
     country: "US",
-    phone: ""
+    phone: "",
   });
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [orderNotes, setOrderNotes] = useState("");
   // Country is now managed by PPP context
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>("");
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
+    useState<string>("");
 
   // Fetch delivery methods
   const deliveryMethods = useQuery(api.shipping.getShippingMethods);
 
   useEffect(() => {
     if (isLoaded && user) {
-      setShippingInfo(prev => ({
+      setShippingInfo((prev) => ({
         ...prev,
         firstName: user.firstName || "",
         lastName: user.lastName || "",
-        email: user.primaryEmailAddress?.emailAddress || ""
+        email: user.primaryEmailAddress?.emailAddress || "",
       }));
     }
   }, [isLoaded, user]);
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShippingInfo(prev => ({
+    setShippingInfo((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const handleBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBillingInfo(prev => ({
+    setBillingInfo((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   // Update shipping info country when PPP country changes
   useEffect(() => {
     if (selectedCountry) {
-      setShippingInfo(prev => ({ ...prev, country: selectedCountry }));
+      setShippingInfo((prev) => ({ ...prev, country: selectedCountry }));
     }
   }, [selectedCountry]);
 
@@ -107,9 +113,13 @@ function CheckoutContent() {
       // Calculate shipping based on selected delivery method
       let shipping = 0;
       if (selectedDeliveryMethod && deliveryMethods) {
-        const selectedMethod = deliveryMethods.find(m => m._id === selectedDeliveryMethod);
+        const selectedMethod = deliveryMethods.find(
+          (m) => m._id === selectedDeliveryMethod,
+        );
         if (selectedMethod) {
-          const isFree = selectedMethod.freeShippingThreshold && getTotalPrice() >= selectedMethod.freeShippingThreshold;
+          const isFree =
+            selectedMethod.freeShippingThreshold &&
+            getTotalPrice() >= selectedMethod.freeShippingThreshold;
           if (!isFree) {
             shipping = selectedMethod.price;
           }
@@ -119,20 +129,26 @@ function CheckoutContent() {
       }
 
       const subtotal = getTotalPrice();
-      const pppResult = isPPPenabled && selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
-        adjustedPrice: subtotal, 
-        currency: 'USD' 
-      };
+      const pppResult =
+        isPPPenabled && selectedCountry
+          ? calculatePPP(subtotal, selectedCountry)
+          : {
+              adjustedPrice: subtotal,
+              currency: "USD",
+            };
       const tax = pppResult.adjustedPrice * 0.08;
       const total = pppResult.adjustedPrice + shipping + tax;
 
       // Create order first using Server Action
       const orderResult = await createOrder({
-        items: items.map(item => {
-          const itemPPP = isPPPenabled && selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
-            adjustedPrice: item.price, 
-            currency: 'USD' 
-          };
+        items: items.map((item) => {
+          const itemPPP =
+            isPPPenabled && selectedCountry
+              ? calculatePPP(item.price, selectedCountry)
+              : {
+                  adjustedPrice: item.price,
+                  currency: "USD",
+                };
           return {
             productId: item.productId,
             quantity: item.quantity,
@@ -149,25 +165,27 @@ function CheckoutContent() {
           country: selectedCountry || "US",
           phone: shippingInfo.phone,
         },
-        billingAddress: billingInfo.sameAsShipping ? {
-          firstName: shippingInfo.firstName,
-          lastName: shippingInfo.lastName,
-          address1: shippingInfo.address,
-          city: shippingInfo.city,
-          state: shippingInfo.state,
-          postalCode: shippingInfo.zipCode,
-          country: selectedCountry || "US",
-          phone: shippingInfo.phone,
-        } : {
-          firstName: billingInfo.firstName,
-          lastName: billingInfo.lastName,
-          address1: billingInfo.address,
-          city: billingInfo.city,
-          state: billingInfo.state,
-          postalCode: billingInfo.zipCode,
-          country: selectedCountry || "US",
-          phone: billingInfo.phone,
-        },
+        billingAddress: billingInfo.sameAsShipping
+          ? {
+              firstName: shippingInfo.firstName,
+              lastName: shippingInfo.lastName,
+              address1: shippingInfo.address,
+              city: shippingInfo.city,
+              state: shippingInfo.state,
+              postalCode: shippingInfo.zipCode,
+              country: selectedCountry || "US",
+              phone: shippingInfo.phone,
+            }
+          : {
+              firstName: billingInfo.firstName,
+              lastName: billingInfo.lastName,
+              address1: billingInfo.address,
+              city: billingInfo.city,
+              state: billingInfo.state,
+              postalCode: billingInfo.zipCode,
+              country: selectedCountry || "US",
+              phone: billingInfo.phone,
+            },
         subtotal,
         tax,
         shipping,
@@ -179,18 +197,21 @@ function CheckoutContent() {
       });
 
       if (!orderResult.success || !orderResult.orderId) {
-        throw new Error(orderResult.error || 'Failed to create order');
+        throw new Error(orderResult.error || "Failed to create order");
       }
 
       // Create Stripe Checkout Session using Server Action
       const checkoutResult = await createCheckoutSessionAction({
         orderId: orderResult.orderId,
-        items: items.map(item => {
+        items: items.map((item) => {
           // Apply PPP pricing to Stripe checkout
-          const itemPPP = isPPPenabled && selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
-            adjustedPrice: item.price, 
-            currency: 'USD' 
-          };
+          const itemPPP =
+            isPPPenabled && selectedCountry
+              ? calculatePPP(item.price, selectedCountry)
+              : {
+                  adjustedPrice: item.price,
+                  currency: "USD",
+                };
           return {
             price_data: {
               currency: itemPPP.currency.toLowerCase(),
@@ -213,12 +234,11 @@ function CheckoutContent() {
 
       // Clear cart before redirecting to Stripe Checkout
       clearCart();
-      
-      // Redirect to Stripe Checkout
-      window.location.href = checkoutResult.url || '';
 
+      // Redirect to Stripe Checkout
+      window.location.href = checkoutResult.url || "";
     } catch (error) {
-      console.error('Checkout failed:', error);
+      console.error("Checkout failed:", error);
       setIsProcessing(false);
     }
   };
@@ -230,9 +250,14 @@ function CheckoutContent() {
           <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
             <CreditCard className="w-12 h-12 text-gray-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Your cart is empty
+          </h1>
           <p className="text-gray-600 mb-8">Add some products to get started</p>
-          <Button onClick={() => router.push('/shop')} className="bg-green-600 hover:bg-green-700 text-white">
+          <Button
+            onClick={() => router.push("/shop")}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
             Continue Shopping
           </Button>
         </div>
@@ -274,7 +299,7 @@ function CheckoutContent() {
                 <Truck className="w-5 h-5 mr-2 text-green-600" />
                 Shipping Information
               </h2>
-              
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
@@ -398,7 +423,7 @@ function CheckoutContent() {
                 <Package className="w-5 h-5 mr-2 text-green-600" />
                 Delivery Method
               </h2>
-              
+
               {deliveryMethods && deliveryMethods.length > 0 ? (
                 <RadioGroup
                   value={selectedDeliveryMethod}
@@ -406,23 +431,40 @@ function CheckoutContent() {
                   className="space-y-4"
                 >
                   {deliveryMethods
-                    .filter(method => 
-                      method.isActive && 
-                      (method.countryCode === 'ALL' || method.countryCode === selectedCountry)
+                    .filter(
+                      (method) =>
+                        method.isActive &&
+                        (method.countryCode === "ALL" ||
+                          method.countryCode === selectedCountry),
                     )
                     .map((method) => {
-                      const methodPrice = calculatePPP(method.price, selectedCountry || 'US');
-                      const isFree = method.freeShippingThreshold && getTotalPrice() >= method.freeShippingThreshold;
-                      
+                      const methodPrice = calculatePPP(
+                        method.price,
+                        selectedCountry || "US",
+                      );
+                      const isFree =
+                        method.freeShippingThreshold &&
+                        getTotalPrice() >= method.freeShippingThreshold;
+
                       return (
-                        <div key={method._id} className="flex items-center space-x-3 p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div
+                          key={method._id}
+                          className="flex items-center space-x-3 p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
                           <RadioGroupItem value={method._id} id={method._id} />
-                          <Label htmlFor={method._id} className="flex-1 cursor-pointer">
+                          <Label
+                            htmlFor={method._id}
+                            className="flex-1 cursor-pointer"
+                          >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-medium text-foreground">{method.name}</div>
+                                <div className="font-medium text-foreground">
+                                  {method.name}
+                                </div>
                                 {method.description && (
-                                  <div className="text-sm text-muted-foreground">{method.description}</div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {method.description}
+                                  </div>
                                 )}
                                 <div className="flex items-center space-x-4 mt-1">
                                   <div className="flex items-center space-x-1 text-sm text-muted-foreground">
@@ -430,7 +472,10 @@ function CheckoutContent() {
                                     <span>{method.estimatedDays}</span>
                                   </div>
                                   {isFree && (
-                                    <Badge variant="secondary" className="text-xs">
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-xs"
+                                    >
                                       Free Shipping
                                     </Badge>
                                   )}
@@ -441,14 +486,22 @@ function CheckoutContent() {
                                   {isFree ? (
                                     <span className="text-green-600">Free</span>
                                   ) : (
-                                    formatPrice(methodPrice.adjustedPrice, methodPrice.currency)
+                                    formatPrice(
+                                      methodPrice.adjustedPrice,
+                                      methodPrice.currency,
+                                    )
                                   )}
                                 </div>
-                                {!isFree && methodPrice.adjustedPrice !== methodPrice.originalPrice && (
-                                  <div className="text-xs text-muted-foreground line-through">
-                                    {formatPrice(methodPrice.originalPrice, 'USD')}
-                                  </div>
-                                )}
+                                {!isFree &&
+                                  methodPrice.adjustedPrice !==
+                                    methodPrice.originalPrice && (
+                                    <div className="text-xs text-muted-foreground line-through">
+                                      {formatPrice(
+                                        methodPrice.originalPrice,
+                                        "USD",
+                                      )}
+                                    </div>
+                                  )}
                               </div>
                             </div>
                           </Label>
@@ -459,7 +512,9 @@ function CheckoutContent() {
               ) : (
                 <div className="text-center py-8">
                   <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No delivery methods available for your location.</p>
+                  <p className="text-muted-foreground">
+                    No delivery methods available for your location.
+                  </p>
                 </div>
               )}
             </div>
@@ -470,14 +525,17 @@ function CheckoutContent() {
                 <CreditCard className="w-5 h-5 mr-2 text-green-600" />
                 Payment Information
               </h2>
-              
+
               <div className="bg-muted/50 p-4 rounded-lg">
                 <div className="flex items-center space-x-3 mb-3">
                   <Shield className="w-5 h-5 text-green-600" />
-                  <span className="font-medium text-foreground">Secure Payment Processing</span>
+                  <span className="font-medium text-foreground">
+                    Secure Payment Processing
+                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Your payment will be processed securely by Stripe. We never store your payment information.
+                  Your payment will be processed securely by Stripe. We never
+                  store your payment information.
                 </p>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <CheckCircle className="w-4 h-4 text-green-600" />
@@ -490,7 +548,9 @@ function CheckoutContent() {
 
             {/* Order Notes */}
             <div className="bg-card rounded-2xl shadow-sm border p-6">
-              <h2 className="text-xl font-bold text-foreground mb-4">Order Notes</h2>
+              <h2 className="text-xl font-bold text-foreground mb-4">
+                Order Notes
+              </h2>
               <textarea
                 value={orderNotes}
                 onChange={(e) => setOrderNotes(e.target.value)}
@@ -504,8 +564,10 @@ function CheckoutContent() {
           {/* Order Summary */}
           <div className="space-y-6">
             <div className="bg-card rounded-2xl shadow-sm border p-6 sticky top-8">
-              <h2 className="text-xl font-bold text-foreground mb-6">Order Summary</h2>
-              
+              <h2 className="text-xl font-bold text-foreground mb-6">
+                Order Summary
+              </h2>
+
               {/* Cart Items */}
               <div className="space-y-4 mb-6">
                 {items.map((item) => (
@@ -529,7 +591,9 @@ function CheckoutContent() {
                       <h3 className="text-sm font-medium text-foreground truncate">
                         {item.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
                     <div className="text-sm font-medium text-foreground">
                       ${(item.price * item.quantity).toFixed(2)}
@@ -542,59 +606,86 @@ function CheckoutContent() {
               <div className="space-y-3 border-t border-border pt-4">
                 {(() => {
                   const subtotal = getTotalPrice();
-                  const subtotalPPP = isPPPenabled && selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
-                    adjustedPrice: subtotal, 
-                    currency: 'USD' 
-                  };
-                  
+                  const subtotalPPP =
+                    isPPPenabled && selectedCountry
+                      ? calculatePPP(subtotal, selectedCountry)
+                      : {
+                          adjustedPrice: subtotal,
+                          currency: "USD",
+                        };
+
                   // Calculate shipping based on selected delivery method
                   let shipping = 0;
-                  let shippingPPP = { adjustedPrice: 0, currency: 'USD' };
-                  
+                  let shippingPPP = { adjustedPrice: 0, currency: "USD" };
+
                   if (selectedDeliveryMethod && deliveryMethods) {
-                    const selectedMethod = deliveryMethods.find(m => m._id === selectedDeliveryMethod);
+                    const selectedMethod = deliveryMethods.find(
+                      (m) => m._id === selectedDeliveryMethod,
+                    );
                     if (selectedMethod) {
-                      const isFree = selectedMethod.freeShippingThreshold && subtotal >= selectedMethod.freeShippingThreshold;
+                      const isFree =
+                        selectedMethod.freeShippingThreshold &&
+                        subtotal >= selectedMethod.freeShippingThreshold;
                       if (!isFree) {
                         shipping = selectedMethod.price;
-                        shippingPPP = isPPPenabled && selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
-                          adjustedPrice: shipping, 
-                          currency: 'USD' 
-                        };
+                        shippingPPP =
+                          isPPPenabled && selectedCountry
+                            ? calculatePPP(shipping, selectedCountry)
+                            : {
+                                adjustedPrice: shipping,
+                                currency: "USD",
+                              };
                       }
                     }
                   } else {
                     // Fallback to default shipping
                     shipping = subtotal >= 50 ? 0 : 9.99;
-                    shippingPPP = isPPPenabled && selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
-                      adjustedPrice: shipping, 
-                      currency: 'USD' 
-                    };
+                    shippingPPP =
+                      isPPPenabled && selectedCountry
+                        ? calculatePPP(shipping, selectedCountry)
+                        : {
+                            adjustedPrice: shipping,
+                            currency: "USD",
+                          };
                   }
-                  
+
                   const tax = subtotal * 0.08;
-                  const taxPPP = isPPPenabled && selectedCountry ? calculatePPP(tax, selectedCountry) : { 
-                    adjustedPrice: tax, 
-                    currency: 'USD' 
-                  };
+                  const taxPPP =
+                    isPPPenabled && selectedCountry
+                      ? calculatePPP(tax, selectedCountry)
+                      : {
+                          adjustedPrice: tax,
+                          currency: "USD",
+                        };
                   const total = subtotal + shipping + tax;
-                  const totalPPP = isPPPenabled && selectedCountry ? calculatePPP(total, selectedCountry) : { 
-                    adjustedPrice: total, 
-                    currency: 'USD' 
-                  };
-                  
+                  const totalPPP =
+                    isPPPenabled && selectedCountry
+                      ? calculatePPP(total, selectedCountry)
+                      : {
+                          adjustedPrice: total,
+                          currency: "USD",
+                        };
+
                   return (
                     <>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Subtotal</span>
                         <span className="text-foreground">
-                          {formatPrice(subtotalPPP.adjustedPrice, subtotalPPP.currency)}
+                          {formatPrice(
+                            subtotalPPP.adjustedPrice,
+                            subtotalPPP.currency,
+                          )}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Shipping</span>
                         <span className="text-foreground">
-                          {shipping === 0 ? "Free" : formatPrice(shippingPPP.adjustedPrice, shippingPPP.currency)}
+                          {shipping === 0
+                            ? "Free"
+                            : formatPrice(
+                                shippingPPP.adjustedPrice,
+                                shippingPPP.currency,
+                              )}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -603,14 +694,22 @@ function CheckoutContent() {
                           {formatPrice(taxPPP.adjustedPrice, taxPPP.currency)}
                         </span>
                       </div>
-                      {'originalPrice' in subtotalPPP && subtotalPPP.adjustedPrice !== subtotalPPP.originalPrice && (
-                        <div className="text-xs text-muted-foreground bg-green-50 dark:bg-green-950 p-2 rounded">
-                          <strong>Local Pricing:</strong> Adjusted for your region
-                        </div>
-                      )}
+                      {"originalPrice" in subtotalPPP &&
+                        subtotalPPP.adjustedPrice !==
+                          subtotalPPP.originalPrice && (
+                          <div className="text-xs text-muted-foreground bg-green-50 dark:bg-green-950 p-2 rounded">
+                            <strong>Local Pricing:</strong> Adjusted for your
+                            region
+                          </div>
+                        )}
                       <div className="flex justify-between text-lg font-bold border-t border-border pt-3">
                         <span>Total</span>
-                        <span>{formatPrice(totalPPP.adjustedPrice, totalPPP.currency)}</span>
+                        <span>
+                          {formatPrice(
+                            totalPPP.adjustedPrice,
+                            totalPPP.currency,
+                          )}
+                        </span>
                       </div>
                     </>
                   );
@@ -653,7 +752,8 @@ function CheckoutContent() {
               </Button>
 
               <p className="text-xs text-muted-foreground text-center mt-4">
-                By placing your order, you agree to our Terms of Service and Privacy Policy.
+                By placing your order, you agree to our Terms of Service and
+                Privacy Policy.
               </p>
             </div>
           </div>

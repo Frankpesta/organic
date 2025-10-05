@@ -1,8 +1,8 @@
 "use server";
 
-import { createCheckoutSession } from '@/lib/stripe';
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { createCheckoutSession } from "@/lib/stripe";
 
 export async function createCheckoutSessionAction(data: {
   orderId: string;
@@ -41,7 +41,7 @@ export async function createCheckoutSessionAction(data: {
 
     return { success: true, url: session.url };
   } catch (error) {
-    console.error('Error creating checkout session:', error);
-    return { success: false, error: 'Failed to create checkout session' };
+    console.error("Error creating checkout session:", error);
+    return { success: false, error: "Failed to create checkout session" };
   }
 }

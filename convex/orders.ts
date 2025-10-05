@@ -24,7 +24,7 @@ export const getUserOrders = query({
           ...order,
           items,
         };
-      })
+      }),
     );
 
     return ordersWithItems;
@@ -61,20 +61,25 @@ export const getCurrentUserOrders = query({
             const product = await ctx.db.get(item.productId);
             return {
               ...item,
-              product: product ? {
-                name: product.name,
-                image: product.images && product.images.length > 0 ? product.images[0] : null,
-                slug: product.slug,
-              } : null,
+              product: product
+                ? {
+                    name: product.name,
+                    image:
+                      product.images && product.images.length > 0
+                        ? product.images[0]
+                        : null,
+                    slug: product.slug,
+                  }
+                : null,
             };
-          })
+          }),
         );
 
         return {
           ...order,
           items: itemsWithProducts,
         };
-      })
+      }),
     );
 
     return ordersWithProducts;
@@ -109,7 +114,7 @@ export const getOrderById = query({
   args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
     const order = await ctx.db.get(args.orderId);
-    
+
     if (!order) return null;
 
     const items = await ctx.db
@@ -128,12 +133,14 @@ export const getOrderById = query({
 export const createOrder = mutation({
   args: {
     userId: v.id("users"),
-    items: v.array(v.object({
-      productId: v.id("products"),
-      variantId: v.optional(v.id("productVariants")),
-      quantity: v.number(),
-      price: v.number(),
-    })),
+    items: v.array(
+      v.object({
+        productId: v.id("products"),
+        variantId: v.optional(v.id("productVariants")),
+        quantity: v.number(),
+        price: v.number(),
+      }),
+    ),
     shippingAddress: v.object({
       firstName: v.string(),
       lastName: v.string(),
@@ -227,7 +234,7 @@ export const updateOrderStatus = mutation({
       v.literal("shipped"),
       v.literal("delivered"),
       v.literal("cancelled"),
-      v.literal("refunded")
+      v.literal("refunded"),
     ),
     trackingNumber: v.optional(v.string()),
     notes: v.optional(v.string()),
@@ -250,7 +257,7 @@ export const updatePaymentStatus = mutation({
       v.literal("pending"),
       v.literal("paid"),
       v.literal("failed"),
-      v.literal("refunded")
+      v.literal("refunded"),
     ),
   },
   handler: async (ctx, args) => {
@@ -276,12 +283,12 @@ export const getAdminOrders = query({
     }
 
     if (args.paymentStatus) {
-      query = query.filter((q) => q.eq(q.field("paymentStatus"), args.paymentStatus));
+      query = query.filter((q) =>
+        q.eq(q.field("paymentStatus"), args.paymentStatus),
+      );
     }
 
-    const orders = await query
-      .order("desc")
-      .take(args.limit || 50);
+    const orders = await query.order("desc").take(args.limit || 50);
 
     // Get order items, user details, and delivery method for each order
     const ordersWithDetails = await Promise.all(
@@ -298,18 +305,22 @@ export const getAdminOrders = query({
         return {
           ...order,
           items,
-          user: user ? {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          } : null,
-          deliveryMethod: deliveryMethod ? {
-            name: deliveryMethod.name,
-            estimatedDays: deliveryMethod.estimatedDays,
-            price: deliveryMethod.price,
-          } : null,
+          user: user
+            ? {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+              }
+            : null,
+          deliveryMethod: deliveryMethod
+            ? {
+                name: deliveryMethod.name,
+                estimatedDays: deliveryMethod.estimatedDays,
+                price: deliveryMethod.price,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     return ordersWithDetails;
@@ -323,19 +334,19 @@ export const getOrderStats = query({
 
     const stats = {
       total: orders.length,
-      pending: orders.filter(o => o.status === "pending").length,
-      processing: orders.filter(o => o.status === "processing").length,
-      shipped: orders.filter(o => o.status === "shipped").length,
-      delivered: orders.filter(o => o.status === "delivered").length,
-      cancelled: orders.filter(o => o.status === "cancelled").length,
-      refunded: orders.filter(o => o.status === "refunded").length,
+      pending: orders.filter((o) => o.status === "pending").length,
+      processing: orders.filter((o) => o.status === "processing").length,
+      shipped: orders.filter((o) => o.status === "shipped").length,
+      delivered: orders.filter((o) => o.status === "delivered").length,
+      cancelled: orders.filter((o) => o.status === "cancelled").length,
+      refunded: orders.filter((o) => o.status === "refunded").length,
       totalRevenue: orders
-        .filter(o => o.paymentStatus === "paid")
+        .filter((o) => o.paymentStatus === "paid")
         .reduce((sum, o) => sum + o.total, 0),
       averageOrderValue: 0,
     };
 
-    const paidOrders = orders.filter(o => o.paymentStatus === "paid");
+    const paidOrders = orders.filter((o) => o.paymentStatus === "paid");
     if (paidOrders.length > 0) {
       stats.averageOrderValue = stats.totalRevenue / paidOrders.length;
     }
@@ -350,7 +361,9 @@ export const getOrderByPaymentIntentId = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("orders")
-      .filter((q) => q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId))
+      .filter((q) =>
+        q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId),
+      )
       .first();
   },
 });
@@ -403,11 +416,15 @@ export const processSuccessfulPayment = mutation({
     // Find order by payment intent ID
     const order = await ctx.db
       .query("orders")
-      .filter((q) => q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId))
+      .filter((q) =>
+        q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId),
+      )
       .first();
 
     if (!order) {
-      throw new Error(`Order not found for payment intent: ${args.paymentIntentId}`);
+      throw new Error(
+        `Order not found for payment intent: ${args.paymentIntentId}`,
+      );
     }
 
     // Update payment status to paid
@@ -435,11 +452,15 @@ export const processFailedPayment = mutation({
   handler: async (ctx, args) => {
     const order = await ctx.db
       .query("orders")
-      .filter((q) => q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId))
+      .filter((q) =>
+        q.eq(q.field("stripePaymentIntentId"), args.paymentIntentId),
+      )
       .first();
 
     if (!order) {
-      throw new Error(`Order not found for payment intent: ${args.paymentIntentId}`);
+      throw new Error(
+        `Order not found for payment intent: ${args.paymentIntentId}`,
+      );
     }
 
     // Update payment status to failed

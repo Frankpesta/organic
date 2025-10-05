@@ -17,7 +17,7 @@ export const getCategories = query({
 export const getAllCategories = query({
   handler: async (ctx) => {
     await requireAdmin(ctx);
-    
+
     return await ctx.db
       .query("categories")
       .order("asc", (q) => q.field("sortOrder"))
@@ -68,7 +68,7 @@ export const createCategory = mutation({
     }
 
     const now = Date.now();
-    
+
     return await ctx.db.insert("categories", {
       ...args,
       createdAt: now,
@@ -125,7 +125,9 @@ export const deleteCategory = mutation({
       .first();
 
     if (productsWithCategory) {
-      throw new Error("Cannot delete category that has products. Please reassign or delete the products first.");
+      throw new Error(
+        "Cannot delete category that has products. Please reassign or delete the products first.",
+      );
     }
 
     return await ctx.db.delete(args.id);
@@ -143,16 +145,17 @@ export const getCategoryStats = query({
       .filter((q) => q.eq(q.field("categoryId"), args.categoryId))
       .collect();
 
-    const activeProducts = products.filter(p => p.isActive);
+    const activeProducts = products.filter((p) => p.isActive);
     const totalInventory = products.reduce((sum, p) => sum + p.inventory, 0);
 
     return {
       totalProducts: products.length,
       activeProducts: activeProducts.length,
       totalInventory,
-      averagePrice: products.length > 0 
-        ? products.reduce((sum, p) => sum + p.price, 0) / products.length 
-        : 0,
+      averagePrice:
+        products.length > 0
+          ? products.reduce((sum, p) => sum + p.price, 0) / products.length
+          : 0,
     };
   },
 });

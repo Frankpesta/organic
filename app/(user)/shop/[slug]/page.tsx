@@ -1,30 +1,36 @@
 "use client";
 
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useParams } from "next/navigation";
+import {
+  CheckCircle,
+  Heart,
+  RotateCcw,
+  Share2,
+  Shield,
+  ShoppingCart,
+  Star,
+  Truck,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { generateMetadata, generateStructuredData } from "@/lib/seo";
-import { calculatePPP, formatPrice } from "@/lib/ppp";
-import { PPTToggle } from "@/components/PPPToggle";
-import { usePPP, PPPProvider } from "@/lib/contexts/PPPContext";
-import { 
-  Star, 
-  ShoppingCart, 
-  Heart, 
-  Share2,
-  Truck,
-  Shield,
-  RotateCcw,
-  CheckCircle
-} from "lucide-react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useCartStore } from "@/lib/stores/cartStore";
-import { WishlistButton } from "@/components/WishlistButton";
 import { toast } from "sonner";
+import { PPTToggle } from "@/components/PPPToggle";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { WishlistButton } from "@/components/WishlistButton";
+import { api } from "@/convex/_generated/api";
+import { PPPProvider, usePPP } from "@/lib/contexts/PPPContext";
+import { calculatePPP, formatPrice } from "@/lib/ppp";
+import { generateMetadata, generateStructuredData } from "@/lib/seo";
+import { useCartStore } from "@/lib/stores/cartStore";
 
 function ProductDetailContent() {
   const params = useParams();
@@ -42,16 +48,21 @@ function ProductDetailContent() {
     );
   }
 
-  const pppResult = isPPPenabled && selectedCountry 
-    ? calculatePPP(product.price, selectedCountry) 
-    : { adjustedPrice: product.price, currency: 'USD', originalPrice: product.price };
-  
+  const pppResult =
+    isPPPenabled && selectedCountry
+      ? calculatePPP(product.price, selectedCountry)
+      : {
+          adjustedPrice: product.price,
+          currency: "USD",
+          originalPrice: product.price,
+        };
+
   const handleAddToCart = () => {
     addItem({
       productId: product._id,
       name: product.name,
       price: product.price,
-      image: product.imageUrls?.[0] || '',
+      image: product.imageUrls?.[0] || "",
       quantity: 1,
     });
     toast.success(`${product.name} added to cart!`);
@@ -60,14 +71,14 @@ function ProductDetailContent() {
   const structuredData = generateStructuredData({
     title: product.name,
     description: product.description,
-    image: product.imageUrls?.[0] || '/og-image.jpg',
+    image: product.imageUrls?.[0] || "/og-image.jpg",
     url: `https://helensbeautysecret.com/shop/${product.slug}`,
-    type: 'product',
+    type: "product",
     price: pppResult.adjustedPrice,
     currency: pppResult.currency,
-    availability: product.inStock ? 'in stock' : 'out of stock',
+    availability: product.inStock ? "in stock" : "out of stock",
     brand: "Helen's Beauty Secret",
-    category: product.category?.name || 'Skincare',
+    category: product.category?.name || "Skincare",
     keywords: product.metaKeywords || [],
   });
 
@@ -75,8 +86,12 @@ function ProductDetailContent() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600 mb-8">The product you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Product Not Found
+          </h1>
+          <p className="text-gray-600 mb-8">
+            The product you're looking for doesn't exist.
+          </p>
           <Link href="/shop">
             <Button className="bg-green-500 hover:bg-green-600 text-white">
               Back to Shop
@@ -93,9 +108,13 @@ function ProductDetailContent() {
       <div className="bg-muted/50 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-foreground">Home</Link>
+            <Link href="/" className="hover:text-foreground">
+              Home
+            </Link>
             <span>/</span>
-            <Link href="/shop" className="hover:text-foreground">Shop</Link>
+            <Link href="/shop" className="hover:text-foreground">
+              Shop
+            </Link>
             <span>/</span>
             <span className="text-foreground">{product.name}</span>
           </nav>
@@ -108,7 +127,9 @@ function ProductDetailContent() {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-              {product.imageUrls && product.imageUrls.length > 0 && product.imageUrls[0] ? (
+              {product.imageUrls &&
+              product.imageUrls.length > 0 &&
+              product.imageUrls[0] ? (
                 <Image
                   src={product.imageUrls[0]}
                   alt={product.name}
@@ -118,25 +139,31 @@ function ProductDetailContent() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-muted-foreground text-lg">No Image Available</div>
+                  <div className="text-muted-foreground text-lg">
+                    No Image Available
+                  </div>
                 </div>
               )}
             </div>
             {product.imageUrls && product.imageUrls.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
-                {product.imageUrls.slice(1, 5).map((image, index) => (
-                  image && (
-                    <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                      <Image
-                        src={image}
-                        alt={`${product.name} ${index + 2}`}
-                        width={150}
-                        height={150}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )
-                ))}
+                {product.imageUrls.slice(1, 5).map(
+                  (image, index) =>
+                    image && (
+                      <div
+                        key={index}
+                        className="aspect-square bg-muted rounded-lg overflow-hidden"
+                      >
+                        <Image
+                          src={image}
+                          alt={`${product.name} ${index + 2}`}
+                          width={150}
+                          height={150}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ),
+                )}
               </div>
             )}
           </div>
@@ -150,10 +177,15 @@ function ProductDetailContent() {
               <div className="flex items-center space-x-4 mb-4">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 text-yellow-400 fill-current"
+                    />
                   ))}
                 </div>
-                <span className="text-muted-foreground">(4.8) • 24 reviews</span>
+                <span className="text-muted-foreground">
+                  (4.8) • 24 reviews
+                </span>
               </div>
               <div className="space-y-4">
                 {/* PPP Toggle */}
@@ -171,12 +203,13 @@ function ProductDetailContent() {
                   </span>
                   {pppResult.adjustedPrice !== pppResult.originalPrice && (
                     <span className="text-xl text-muted-foreground line-through">
-                      {formatPrice(pppResult.originalPrice, 'USD')}
+                      {formatPrice(pppResult.originalPrice, "USD")}
                     </span>
                   )}
                   {product.comparePrice && (
                     <span className="bg-destructive/10 text-destructive text-sm font-medium px-2 py-1 rounded">
-                      Save {formatPrice(product.comparePrice - product.price, 'USD')}
+                      Save{" "}
+                      {formatPrice(product.comparePrice - product.price, "USD")}
                     </span>
                   )}
                 </div>
@@ -184,20 +217,25 @@ function ProductDetailContent() {
                 {/* PPP Notice */}
                 {pppResult.adjustedPrice !== pppResult.originalPrice && (
                   <div className="text-sm text-muted-foreground bg-green-50 dark:bg-green-950 p-3 rounded-lg">
-                    <strong>Local Pricing:</strong> This price has been adjusted for your region to provide fair, local pricing.
+                    <strong>Local Pricing:</strong> This price has been adjusted
+                    for your region to provide fair, local pricing.
                   </div>
                 )}
               </div>
             </div>
 
             <div>
-              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+              <p className="text-muted-foreground leading-relaxed">
+                {product.description}
+              </p>
             </div>
 
             {/* Key Benefits */}
             {product.benefits && product.benefits.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">Key Benefits</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-3">
+                  Key Benefits
+                </h3>
                 <ul className="space-y-2">
                   {product.benefits.map((benefit, index) => (
                     <li key={index} className="flex items-center space-x-2">
@@ -212,7 +250,9 @@ function ProductDetailContent() {
             {/* Ingredients */}
             {product.ingredients && product.ingredients.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">Key Ingredients</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-3">
+                  Key Ingredients
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.ingredients.slice(0, 6).map((ingredient, index) => (
                     <span
@@ -229,20 +269,20 @@ function ProductDetailContent() {
             {/* Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-green-500 hover:bg-green-600 text-white flex-1"
                   disabled={!product.inStock}
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
-                  {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                  {product.inStock ? "Add to Cart" : "Out of Stock"}
                 </Button>
                 <WishlistButton
                   productId={product._id}
                   name={product.name}
                   price={product.price}
-                  image={product.imageUrls?.[0] || ''}
+                  image={product.imageUrls?.[0] || ""}
                   slug={product.slug}
                   size="lg"
                   variant="outline"
@@ -258,7 +298,9 @@ function ProductDetailContent() {
                 {product.inStock ? (
                   <>
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-green-700">In Stock ({product.inventory} available)</span>
+                    <span className="text-green-700">
+                      In Stock ({product.inventory} available)
+                    </span>
                   </>
                 ) : (
                   <>
@@ -311,17 +353,23 @@ function ProductDetailContent() {
               <p className="text-gray-700 leading-relaxed">
                 {product.description}
               </p>
-              
+
               {product.howToUse && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">How to Use</h3>
-                  <p className="text-gray-700 leading-relaxed">{product.howToUse}</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    How to Use
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {product.howToUse}
+                  </p>
                 </div>
               )}
 
               {product.ingredients && product.ingredients.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Full Ingredient List</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Full Ingredient List
+                  </h3>
                   <p className="text-gray-700 leading-relaxed">
                     {product.ingredients.join(", ")}
                   </p>

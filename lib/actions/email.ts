@@ -1,8 +1,15 @@
 "use server";
 
-import { sendWelcomeEmail, sendOrderConfirmationEmail, sendShippingConfirmationEmail } from "@/lib/services/emailService";
+import {
+  sendOrderConfirmationEmail,
+  sendShippingConfirmationEmail,
+  sendWelcomeEmail,
+} from "@/lib/services/emailService";
 
-export async function sendWelcomeEmailAction(customerName: string, customerEmail: string) {
+export async function sendWelcomeEmailAction(
+  customerName: string,
+  customerEmail: string,
+) {
   try {
     const result = await sendWelcomeEmail({ customerName, customerEmail });
     return { success: result.success, error: result.error };
@@ -75,6 +82,9 @@ export async function sendShippingConfirmationEmailAction(data: {
     return { success: result.success, error: result.error };
   } catch (error) {
     console.error("Error sending shipping confirmation email:", error);
-    return { success: false, error: "Failed to send shipping confirmation email" };
+    return {
+      success: false,
+      error: "Failed to send shipping confirmation email",
+    };
   }
 }

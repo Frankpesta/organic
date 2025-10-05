@@ -1,12 +1,18 @@
 "use client";
 
+import { useMutation, useQuery } from "convex/react";
+import { Edit, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +21,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -23,10 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/convex/_generated/api";
 
 interface CategoryForm {
   name: string;
@@ -40,7 +46,14 @@ interface CategoryForm {
 export default function CategoriesPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<{
+    _id: string;
+    name: string;
+    slug: string;
+    description: string;
+    isActive: boolean;
+    sortOrder: number;
+  } | null>(null);
   const [formData, setFormData] = useState<CategoryForm>({
     name: "",
     slug: "",
@@ -55,13 +68,19 @@ export default function CategoriesPage() {
   const updateCategory = useMutation(api.categories.updateCategory);
   const deleteCategory = useMutation(api.categories.deleteCategory);
 
-  const handleInputChange = (field: keyof CategoryForm, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
+  const handleInputChange = (
+    field: keyof CategoryForm,
+    value: string | number | boolean,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
     // Auto-generate slug from name
-    if (field === 'name') {
-      const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      setFormData(prev => ({ ...prev, slug }));
+    if (field === "name") {
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+      setFormData((prev) => ({ ...prev, slug }));
     }
   };
 
@@ -75,7 +94,7 @@ export default function CategoriesPage() {
         isActive: formData.isActive,
         sortOrder: formData.sortOrder,
       });
-      
+
       setIsCreateOpen(false);
       setFormData({
         name: "",
@@ -92,7 +111,14 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleEdit = (category: any) => {
+  const handleEdit = (category: {
+    _id: string;
+    name: string;
+    slug: string;
+    description: string;
+    isActive: boolean;
+    sortOrder: number;
+  }) => {
     setEditingCategory(category);
     setFormData({
       name: category.name,
@@ -110,7 +136,7 @@ export default function CategoriesPage() {
 
     try {
       await updateCategory({
-        id: editingCategory._id as any,
+        id: editingCategory._id,
         name: formData.name,
         slug: formData.slug,
         description: formData.description,
@@ -118,7 +144,7 @@ export default function CategoriesPage() {
         isActive: formData.isActive,
         sortOrder: formData.sortOrder,
       });
-      
+
       setIsEditOpen(false);
       setEditingCategory(null);
       toast.success("Category updated successfully");
@@ -132,7 +158,7 @@ export default function CategoriesPage() {
     if (!confirm("Are you sure you want to delete this category?")) return;
 
     try {
-      await deleteCategory({ id: categoryId as any });
+      await deleteCategory({ id: categoryId });
       toast.success("Category deleted successfully");
     } catch (error) {
       toast.error("Failed to delete category");
@@ -140,13 +166,15 @@ export default function CategoriesPage() {
     }
   };
 
-  const toggleStatus = async (category: any) => {
+  const toggleStatus = async (category: { _id: string; isActive: boolean }) => {
     try {
       await updateCategory({
-        id: category._id as any,
+        id: category._id,
         isActive: !category.isActive,
       });
-      toast.success(`Category ${!category.isActive ? 'activated' : 'deactivated'}`);
+      toast.success(
+        `Category ${!category.isActive ? "activated" : "deactivated"}`,
+      );
     } catch (error) {
       toast.error("Failed to update category status");
       console.error(error);
@@ -189,7 +217,7 @@ export default function CategoriesPage() {
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
                   placeholder="Category name"
                 />
               </div>
@@ -198,7 +226,7 @@ export default function CategoriesPage() {
                 <Input
                   id="slug"
                   value={formData.slug}
-                  onChange={(e) => handleInputChange('slug', e.target.value)}
+                  onChange={(e) => handleInputChange("slug", e.target.value)}
                   placeholder="category-slug"
                 />
               </div>
@@ -207,7 +235,9 @@ export default function CategoriesPage() {
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   placeholder="Category description"
                 />
               </div>
@@ -216,7 +246,7 @@ export default function CategoriesPage() {
                 <Input
                   id="image"
                   value={formData.image}
-                  onChange={(e) => handleInputChange('image', e.target.value)}
+                  onChange={(e) => handleInputChange("image", e.target.value)}
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
@@ -226,7 +256,12 @@ export default function CategoriesPage() {
                   id="sortOrder"
                   type="number"
                   value={formData.sortOrder}
-                  onChange={(e) => handleInputChange('sortOrder', parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "sortOrder",
+                      parseInt(e.target.value, 10) || 0,
+                    )
+                  }
                   placeholder="0"
                 />
               </div>
@@ -235,13 +270,19 @@ export default function CategoriesPage() {
                   type="checkbox"
                   id="isActive"
                   checked={formData.isActive}
-                  onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                  onChange={(e) =>
+                    handleInputChange("isActive", e.target.checked)
+                  }
                 />
                 <Label htmlFor="isActive">Active</Label>
               </div>
             </div>
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateOpen(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={handleCreate}>Create Category</Button>
@@ -274,14 +315,20 @@ export default function CategoriesPage() {
               {categories?.map((category) => (
                 <TableRow key={category._id}>
                   <TableCell className="font-medium">{category.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{category.slug}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {category.slug}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant={category.isActive ? "default" : "secondary"}>
+                    <Badge
+                      variant={category.isActive ? "default" : "secondary"}
+                    >
                       {category.isActive ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell>{category.sortOrder}</TableCell>
-                  <TableCell>{new Date(category.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(category.createdAt).toLocaleDateString()}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <Button
@@ -289,7 +336,11 @@ export default function CategoriesPage() {
                         size="sm"
                         onClick={() => toggleStatus(category)}
                       >
-                        {category.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {category.isActive ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                       <Button
                         variant="ghost"
@@ -330,7 +381,7 @@ export default function CategoriesPage() {
               <Input
                 id="edit-name"
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Category name"
               />
             </div>
@@ -339,7 +390,7 @@ export default function CategoriesPage() {
               <Input
                 id="edit-slug"
                 value={formData.slug}
-                onChange={(e) => handleInputChange('slug', e.target.value)}
+                onChange={(e) => handleInputChange("slug", e.target.value)}
                 placeholder="category-slug"
               />
             </div>
@@ -348,7 +399,9 @@ export default function CategoriesPage() {
               <Textarea
                 id="edit-description"
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
                 placeholder="Category description"
               />
             </div>
@@ -357,7 +410,7 @@ export default function CategoriesPage() {
               <Input
                 id="edit-image"
                 value={formData.image}
-                onChange={(e) => handleInputChange('image', e.target.value)}
+                onChange={(e) => handleInputChange("image", e.target.value)}
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -367,7 +420,12 @@ export default function CategoriesPage() {
                 id="edit-sortOrder"
                 type="number"
                 value={formData.sortOrder}
-                onChange={(e) => handleInputChange('sortOrder', parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "sortOrder",
+                    parseInt(e.target.value, 10) || 0,
+                  )
+                }
                 placeholder="0"
               />
             </div>
@@ -376,13 +434,19 @@ export default function CategoriesPage() {
                 type="checkbox"
                 id="edit-isActive"
                 checked={formData.isActive}
-                onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("isActive", e.target.checked)
+                }
               />
               <Label htmlFor="edit-isActive">Active</Label>
             </div>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditOpen(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleUpdate}>Update Category</Button>

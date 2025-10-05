@@ -19,11 +19,11 @@ export const getShippingMethodsByCountry = query({
     return await ctx.db
       .query("shippingMethods")
       .filter((q) => q.eq(q.field("isActive"), true))
-      .filter((q) => 
+      .filter((q) =>
         q.or(
           q.eq(q.field("countryCode"), args.countryCode),
-          q.eq(q.field("countryCode"), "ALL")
-        )
+          q.eq(q.field("countryCode"), "ALL"),
+        ),
       )
       .order("asc")
       .collect();
@@ -52,7 +52,7 @@ export const createShippingMethod = mutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
-    
+
     return await ctx.db.insert("shippingMethods", {
       ...args,
       createdAt: now,
@@ -76,7 +76,7 @@ export const updateShippingMethod = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    
+
     return await ctx.db.patch(id, {
       ...updates,
       updatedAt: Date.now(),
@@ -106,11 +106,11 @@ export const calculateShippingCost = query({
     const shippingMethods = await ctx.db
       .query("shippingMethods")
       .filter((q) => q.eq(q.field("isActive"), true))
-      .filter((q) => 
+      .filter((q) =>
         q.or(
           q.eq(q.field("countryCode"), args.countryCode),
-          q.eq(q.field("countryCode"), "ALL")
-        )
+          q.eq(q.field("countryCode"), "ALL"),
+        ),
       )
       .order("asc")
       .collect();
@@ -125,7 +125,10 @@ export const calculateShippingCost = query({
 
     for (const method of shippingMethods) {
       // Check if free shipping applies
-      if (method.freeShippingThreshold && args.orderTotal >= method.freeShippingThreshold) {
+      if (
+        method.freeShippingThreshold &&
+        args.orderTotal >= method.freeShippingThreshold
+      ) {
         return {
           method: method,
           cost: 0,

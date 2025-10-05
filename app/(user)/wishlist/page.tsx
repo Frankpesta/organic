@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import {
+  ArrowLeft,
+  Heart,
+  Package,
+  ShoppingCart,
+  Star,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Heart, 
-  ShoppingCart, 
-  Trash2, 
-  ArrowLeft,
-  Star,
-  Package
-} from "lucide-react";
-import { useWishlistStore } from "@/lib/stores/wishlistStore";
 import { useCartStore } from "@/lib/stores/cartStore";
-import { toast } from "sonner";
+import { useWishlistStore } from "@/lib/stores/wishlistStore";
 
 export default function WishlistPage() {
   const { items, removeItem, clearWishlist } = useWishlistStore();
@@ -66,11 +66,14 @@ export default function WishlistPage() {
             </Link>
             <div className="flex items-center space-x-2">
               <Heart className="w-6 h-6 text-red-500 fill-current" />
-              <h1 className="text-3xl font-bold text-foreground">My Wishlist</h1>
+              <h1 className="text-3xl font-bold text-foreground">
+                My Wishlist
+              </h1>
             </div>
           </div>
           <p className="text-muted-foreground">
-            {items.length} {items.length === 1 ? 'item' : 'items'} in your wishlist
+            {items.length} {items.length === 1 ? "item" : "items"} in your
+            wishlist
           </p>
         </div>
 
@@ -80,7 +83,9 @@ export default function WishlistPage() {
               <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-12 h-12 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Your wishlist is empty</h3>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Your wishlist is empty
+              </h3>
               <p className="text-muted-foreground mb-6">
                 Start adding items you love to your wishlist
               </p>
@@ -108,14 +113,17 @@ export default function WishlistPage() {
                 </Button>
               </div>
               <div className="text-sm text-muted-foreground">
-                {items.length} {items.length === 1 ? 'item' : 'items'}
+                {items.length} {items.length === 1 ? "item" : "items"}
               </div>
             </div>
 
             {/* Wishlist Items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {items.map((item) => (
-                <Card key={item.productId} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+                <Card
+                  key={item.productId}
+                  className="group hover:shadow-lg transition-all duration-300 overflow-hidden"
+                >
                   <div className="aspect-square bg-muted relative">
                     {item.image ? (
                       <Image
@@ -129,7 +137,7 @@ export default function WishlistPage() {
                         <Package className="w-12 h-12 text-muted-foreground" />
                       </div>
                     )}
-                    
+
                     {/* Remove Button */}
                     <Button
                       size="sm"
@@ -149,27 +157,32 @@ export default function WishlistPage() {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-4">
                     <div className="space-y-3">
                       <div>
                         <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-green-600 transition-colors">
-                          <Link href={`/shop/${item.slug}`}>
-                            {item.name}
-                          </Link>
+                          <Link href={`/shop/${item.slug}`}>{item.name}</Link>
                         </h3>
                         <div className="flex items-center space-x-2 mt-1">
                           <div className="flex">
                             {[...Array(5)].map((_, i) => (
-                              <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                              <Star
+                                key={i}
+                                className="w-4 h-4 text-yellow-400 fill-current"
+                              />
                             ))}
                           </div>
-                          <span className="text-sm text-muted-foreground">(24)</span>
+                          <span className="text-sm text-muted-foreground">
+                            (24)
+                          </span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
-                        <span className="text-xl font-bold text-foreground">${item.price}</span>
+                        <span className="text-xl font-bold text-foreground">
+                          ${item.price}
+                        </span>
                         <Button
                           onClick={() => handleMoveToCart(item)}
                           className="bg-green-600 hover:bg-green-700 text-white"

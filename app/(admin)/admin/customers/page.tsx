@@ -1,19 +1,35 @@
 "use client";
 
+import { useMutation, useQuery } from "convex/react";
+import {
+  Calendar,
+  Edit,
+  Mail,
+  Search,
+  Shield,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -29,10 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, UserPlus, Edit, Shield, User, Mail, Calendar, ShoppingCart } from "lucide-react";
-import { toast } from "sonner";
+import { api } from "@/convex/_generated/api";
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,22 +53,25 @@ export default function CustomersPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
 
-  const customers = useQuery(api.admin.getUsers, { 
+  const customers = useQuery(api.admin.getUsers, {
     limit: 100,
-    role: roleFilter === "all" ? undefined : roleFilter 
+    role: roleFilter === "all" ? undefined : roleFilter,
   });
   const updateUserRole = useMutation(api.admin.updateUserRole);
 
-  const filteredCustomers = customers?.filter(customer => {
-    const matchesSearch = 
+  const filteredCustomers = customers?.filter((customer) => {
+    const matchesSearch =
       customer.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesSearch;
   });
 
-  const handleRoleUpdate = async (userId: string, newRole: "admin" | "customer") => {
+  const handleRoleUpdate = async (
+    userId: string,
+    newRole: "admin" | "customer",
+  ) => {
     try {
       await updateUserRole({ userId: userId as any, role: newRole });
       toast.success(`User role updated to ${newRole}`);
@@ -82,8 +98,8 @@ export default function CustomersPage() {
 
   const customerStats = {
     total: customers?.length || 0,
-    admins: customers?.filter(c => c.role === "admin").length || 0,
-    customers: customers?.filter(c => c.role === "customer").length || 0,
+    admins: customers?.filter((c) => c.role === "admin").length || 0,
+    customers: customers?.filter((c) => c.role === "customer").length || 0,
   };
 
   return (
@@ -176,22 +192,24 @@ export default function CustomersPage() {
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
                         {user.imageUrl ? (
-                          <img 
-                            src={user.imageUrl} 
-                            alt={user.firstName || 'User'} 
+                          <img
+                            src={user.imageUrl}
+                            alt={user.firstName || "User"}
                             className="w-10 h-10 rounded-full object-cover"
                           />
                         ) : (
                           <span className="text-sm font-medium">
-                            {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
+                            {user.firstName?.[0] ||
+                              user.email?.[0]?.toUpperCase() ||
+                              "U"}
                           </span>
                         )}
                       </div>
                       <div>
                         <div className="font-medium">
-                          {user.firstName && user.lastName 
-                            ? `${user.firstName} ${user.lastName}` 
-                            : 'No name set'}
+                          {user.firstName && user.lastName
+                            ? `${user.firstName} ${user.lastName}`
+                            : "No name set"}
                         </div>
                         <div className="text-sm text-muted-foreground">
                           ID: {user.clerkId.slice(-8)}
@@ -206,21 +224,31 @@ export default function CustomersPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge 
+                    <Badge
                       variant={user.role === "admin" ? "default" : "secondary"}
-                      className={user.role === "admin" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : ""}
+                      className={
+                        user.role === "admin"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : ""
+                      }
                     >
                       {user.role === "admin" ? (
-                        <><Shield className="h-3 w-3 mr-1" /> Admin</>
+                        <>
+                          <Shield className="h-3 w-3 mr-1" /> Admin
+                        </>
                       ) : (
-                        <><User className="h-3 w-3 mr-1" /> Customer</>
+                        <>
+                          <User className="h-3 w-3 mr-1" /> Customer
+                        </>
                       )}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
@@ -251,7 +279,8 @@ export default function CustomersPage() {
           <DialogHeader>
             <DialogTitle>Edit User Role</DialogTitle>
             <DialogDescription>
-              Change the role for {editingUser?.firstName} {editingUser?.lastName || editingUser?.email}
+              Change the role for {editingUser?.firstName}{" "}
+              {editingUser?.lastName || editingUser?.email}
             </DialogDescription>
           </DialogHeader>
           {editingUser && (
@@ -259,38 +288,52 @@ export default function CustomersPage() {
               <div className="flex items-center space-x-3 p-4 border rounded-lg">
                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                   {editingUser.imageUrl ? (
-                    <img 
-                      src={editingUser.imageUrl} 
-                      alt={editingUser.firstName || 'User'} 
+                    <img
+                      src={editingUser.imageUrl}
+                      alt={editingUser.firstName || "User"}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
                     <span className="text-lg font-medium">
-                      {editingUser.firstName?.[0] || editingUser.email?.[0]?.toUpperCase() || 'U'}
+                      {editingUser.firstName?.[0] ||
+                        editingUser.email?.[0]?.toUpperCase() ||
+                        "U"}
                     </span>
                   )}
                 </div>
                 <div>
                   <div className="font-medium">
-                    {editingUser.firstName && editingUser.lastName 
-                      ? `${editingUser.firstName} ${editingUser.lastName}` 
-                      : 'No name set'}
+                    {editingUser.firstName && editingUser.lastName
+                      ? `${editingUser.firstName} ${editingUser.lastName}`
+                      : "No name set"}
                   </div>
-                  <div className="text-sm text-muted-foreground">{editingUser.email}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {editingUser.email}
+                  </div>
                 </div>
               </div>
-              
+
               <div>
                 <Label>Current Role</Label>
                 <div className="mt-2">
-                  <Badge 
-                    variant={editingUser.role === "admin" ? "default" : "secondary"}
-                    className={editingUser.role === "admin" ? "bg-green-100 text-green-800" : ""}
+                  <Badge
+                    variant={
+                      editingUser.role === "admin" ? "default" : "secondary"
+                    }
+                    className={
+                      editingUser.role === "admin"
+                        ? "bg-green-100 text-green-800"
+                        : ""
+                    }
                   >
                     {editingUser.role === "admin" ? (
-                      <><Shield className="h-3 w-3 mr-1" /> Admin</>
+                      <>
+                        <Shield className="h-3 w-3 mr-1" /> Admin
+                      </>
                     ) : (
-                      <><User className="h-3 w-3 mr-1" /> Customer</>
+                      <>
+                        <User className="h-3 w-3 mr-1" /> Customer
+                      </>
                     )}
                   </Badge>
                 </div>
@@ -300,8 +343,12 @@ export default function CustomersPage() {
                 <Label>Change Role To:</Label>
                 <div className="flex space-x-2">
                   <Button
-                    variant={editingUser.role === "customer" ? "default" : "outline"}
-                    onClick={() => handleRoleUpdate(editingUser._id, "customer")}
+                    variant={
+                      editingUser.role === "customer" ? "default" : "outline"
+                    }
+                    onClick={() =>
+                      handleRoleUpdate(editingUser._id, "customer")
+                    }
                     disabled={editingUser.role === "customer"}
                     className="flex-1"
                   >
@@ -309,7 +356,9 @@ export default function CustomersPage() {
                     Customer
                   </Button>
                   <Button
-                    variant={editingUser.role === "admin" ? "default" : "outline"}
+                    variant={
+                      editingUser.role === "admin" ? "default" : "outline"
+                    }
                     onClick={() => handleRoleUpdate(editingUser._id, "admin")}
                     disabled={editingUser.role === "admin"}
                     className="flex-1"

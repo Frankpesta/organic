@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { calculatePPP, formatPrice } from '@/lib/ppp';
-import { PPTToggle } from '@/components/PPPToggle';
-import { usePPP } from '@/lib/contexts/PPPContext';
-import { CreditCard, Lock } from 'lucide-react';
+import {
+  CardElement,
+  Elements,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { CreditCard, Lock } from "lucide-react";
+import { useState } from "react";
+import { PPTToggle } from "@/components/PPPToggle";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { usePPP } from "@/lib/contexts/PPPContext";
+import { calculatePPP, formatPrice } from "@/lib/ppp";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+);
 
 interface PaymentFormProps {
   amount: number;
@@ -21,21 +28,22 @@ interface PaymentFormProps {
   userId: string;
 }
 
-function PaymentFormInner({ 
-  amount, 
-  currency = 'USD', 
-  onSuccess, 
-  onError, 
-  orderId, 
-  userId 
+function PaymentFormInner({
+  amount,
+  currency = "USD",
+  onSuccess,
+  onError,
+  orderId,
+  userId,
 }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const { selectedCountry, isPPPenabled } = usePPP();
-  const pppResult = isPPPenabled && selectedCountry 
-    ? calculatePPP(amount, selectedCountry, currency) 
-    : { adjustedPrice: amount, currency: 'USD', originalPrice: amount };
+  const pppResult =
+    isPPPenabled && selectedCountry
+      ? calculatePPP(amount, selectedCountry, currency)
+      : { adjustedPrice: amount, currency: "USD", originalPrice: amount };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,10 +56,10 @@ function PaymentFormInner({
 
     try {
       // Create payment intent with PPP-adjusted amount
-      const response = await fetch('/api/stripe/create-payment-intent', {
-        method: 'POST',
+      const response = await fetch("/api/stripe/create-payment-intent", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           amount: pppResult.adjustedPrice,
@@ -66,22 +74,25 @@ function PaymentFormInner({
       const cardElement = elements.getElement(CardElement);
 
       if (!cardElement) {
-        throw new Error('Card element not found');
+        throw new Error("Card element not found");
       }
 
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+          },
         },
-      });
+      );
 
       if (error) {
-        onError(error.message || 'Payment failed');
-      } else if (paymentIntent.status === 'succeeded') {
+        onError(error.message || "Payment failed");
+      } else if (paymentIntent.status === "succeeded") {
         onSuccess(paymentIntent);
       }
     } catch (error) {
-      onError('An unexpected error occurred');
+      onError("An unexpected error occurred");
     } finally {
       setIsProcessing(false);
     }
@@ -132,10 +143,10 @@ function PaymentFormInner({
                 options={{
                   style: {
                     base: {
-                      fontSize: '16px',
-                      color: '#424770',
-                      '::placeholder': {
-                        color: '#aab7c4',
+                      fontSize: "16px",
+                      color: "#424770",
+                      "::placeholder": {
+                        color: "#aab7c4",
                       },
                     },
                   },
@@ -156,7 +167,9 @@ function PaymentFormInner({
             disabled={!stripe || isProcessing}
             className="w-full bg-green-500 hover:bg-green-600 text-white"
           >
-            {isProcessing ? 'Processing...' : `Pay ${formatPrice(pppResult.adjustedPrice, pppResult.currency)}`}
+            {isProcessing
+              ? "Processing..."
+              : `Pay ${formatPrice(pppResult.adjustedPrice, pppResult.currency)}`}
           </Button>
         </CardContent>
       </Card>

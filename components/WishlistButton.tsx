@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
-import { useWishlistStore } from "@/lib/stores/wishlistStore";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useWishlistStore } from "@/lib/stores/wishlistStore";
 import { cn } from "@/lib/utils";
 
 interface WishlistButtonProps {
@@ -31,11 +31,11 @@ export function WishlistButton({
   const { items, addItem, removeItem } = useWishlistStore();
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const isInWishlist = items.some(item => item.productId === productId);
+  const isInWishlist = items.some((item) => item.productId === productId);
 
   const handleToggle = () => {
     setIsAnimating(true);
-    
+
     if (isInWishlist) {
       removeItem(productId);
       toast.success(`${name} removed from wishlist`);
@@ -63,14 +63,14 @@ export function WishlistButton({
         "transition-all duration-300 hover:scale-105",
         isInWishlist && "text-red-500 hover:text-red-600",
         isAnimating && "scale-110",
-        className
+        className,
       )}
     >
-      <Heart 
+      <Heart
         className={cn(
           "w-4 h-4 transition-all duration-300",
-          isInWishlist && "fill-current"
-        )} 
+          isInWishlist && "fill-current",
+        )}
       />
     </Button>
   );

@@ -1,29 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import {
+  Bell,
+  Calendar,
+  CreditCard,
+  Edit,
+  Heart,
+  Mail,
+  MapPin,
+  Package,
+  Phone,
+  Save,
+  Settings,
+  Shield,
+  Star,
+  Truck,
+  User,
+  X,
+} from "lucide-react";
+import { useState } from "react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Edit, 
-  Save, 
-  X,
-  Package,
-  Heart,
-  Settings,
-  Bell,
-  Shield,
-  CreditCard,
-  Truck,
-  Star,
-  Calendar
-} from "lucide-react";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -42,8 +42,8 @@ export default function ProfilePage() {
     preferences: {
       newsletter: true,
       smsUpdates: false,
-      productRecommendations: true
-    }
+      productRecommendations: true,
+    },
   });
 
   const handleSave = () => {
@@ -67,28 +67,28 @@ export default function ProfilePage() {
       preferences: {
         newsletter: true,
         smsUpdates: false,
-        productRecommendations: true
-      }
+        productRecommendations: true,
+      },
     });
     setIsEditing(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (name.startsWith("preferences.")) {
       const prefKey = name.split(".")[1];
-      setProfileData(prev => ({
+      setProfileData((prev) => ({
         ...prev,
         preferences: {
           ...prev.preferences,
-          [prefKey]: type === "checkbox" ? checked : value
-        }
+          [prefKey]: type === "checkbox" ? checked : value,
+        },
       }));
     } else {
-      setProfileData(prev => ({
+      setProfileData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -97,7 +97,7 @@ export default function ProfilePage() {
     { id: "profile", label: "Profile", icon: User },
     { id: "orders", label: "Orders", icon: Package },
     { id: "wishlist", label: "Wishlist", icon: Heart },
-    { id: "settings", label: "Settings", icon: Settings }
+    { id: "settings", label: "Settings", icon: Settings },
   ];
 
   const recentOrders = [
@@ -105,23 +105,23 @@ export default function ProfilePage() {
       id: "HBS-2024-001",
       date: "2024-01-15",
       status: "Delivered",
-      total: 127.50,
-      items: 3
+      total: 127.5,
+      items: 3,
     },
     {
       id: "HBS-2024-002",
       date: "2024-01-10",
       status: "Shipped",
       total: 89.99,
-      items: 2
+      items: 2,
     },
     {
       id: "HBS-2024-003",
       date: "2024-01-05",
       status: "Processing",
       total: 156.75,
-      items: 4
-    }
+      items: 4,
+    },
   ];
 
   const wishlistItems = [
@@ -129,20 +129,20 @@ export default function ProfilePage() {
       id: 1,
       name: "Organic Vitamin C Serum",
       price: 45.99,
-      image: "/products/vitamin-c-serum.jpg"
+      image: "/products/vitamin-c-serum.jpg",
     },
     {
       id: 2,
       name: "Hydrating Face Cream",
-      price: 32.50,
-      image: "/products/face-cream.jpg"
+      price: 32.5,
+      image: "/products/face-cream.jpg",
     },
     {
       id: 3,
       name: "Gentle Cleanser",
-      price: 28.00,
-      image: "/products/cleanser.jpg"
-    }
+      price: 28.0,
+      image: "/products/cleanser.jpg",
+    },
   ];
 
   return (
@@ -159,7 +159,9 @@ export default function ProfilePage() {
                 <h1 className="text-2xl font-bold text-foreground">
                   Welcome back, {user?.firstName || "User"}!
                 </h1>
-                <p className="text-muted-foreground">Manage your account and preferences</p>
+                <p className="text-muted-foreground">
+                  Manage your account and preferences
+                </p>
               </div>
             </div>
           </div>
@@ -199,7 +201,9 @@ export default function ProfilePage() {
                 <div className="space-y-6">
                   <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold text-foreground">Personal Information</h2>
+                      <h2 className="text-xl font-bold text-foreground">
+                        Personal Information
+                      </h2>
                       {!isEditing ? (
                         <Button
                           onClick={() => setIsEditing(true)}
@@ -284,7 +288,9 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-foreground mb-4">Address Information</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-4">
+                        Address Information
+                      </h3>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="md:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -352,12 +358,18 @@ export default function ProfilePage() {
 
                   {/* Preferences */}
                   <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-bold text-foreground mb-6">Communication Preferences</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-6">
+                      Communication Preferences
+                    </h2>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">Email Newsletter</h3>
-                          <p className="text-sm text-gray-500">Receive beauty tips and product updates</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            Email Newsletter
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Receive beauty tips and product updates
+                          </p>
                         </div>
                         <input
                           type="checkbox"
@@ -369,8 +381,12 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">SMS Updates</h3>
-                          <p className="text-sm text-gray-500">Get order updates via text message</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            SMS Updates
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Get order updates via text message
+                          </p>
                         </div>
                         <input
                           type="checkbox"
@@ -382,13 +398,19 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">Product Recommendations</h3>
-                          <p className="text-sm text-gray-500">Personalized product suggestions</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            Product Recommendations
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Personalized product suggestions
+                          </p>
                         </div>
                         <input
                           type="checkbox"
                           name="preferences.productRecommendations"
-                          checked={profileData.preferences.productRecommendations}
+                          checked={
+                            profileData.preferences.productRecommendations
+                          }
                           onChange={handleChange}
                           className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                         />
@@ -402,17 +424,26 @@ export default function ProfilePage() {
               {activeTab === "orders" && (
                 <div className="space-y-6">
                   <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-bold text-foreground mb-6">Order History</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-6">
+                      Order History
+                    </h2>
                     <div className="space-y-4">
                       {recentOrders.map((order) => (
-                        <div key={order.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                        <div
+                          key={order.id}
+                          className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+                        >
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="font-semibold text-foreground">Order #{order.id}</h3>
+                              <h3 className="font-semibold text-foreground">
+                                Order #{order.id}
+                              </h3>
                               <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                                 <div className="flex items-center space-x-1">
                                   <Calendar className="w-4 h-4" />
-                                  <span>{new Date(order.date).toLocaleDateString()}</span>
+                                  <span>
+                                    {new Date(order.date).toLocaleDateString()}
+                                  </span>
                                 </div>
                                 <div className="flex items-center space-x-1">
                                   <Package className="w-4 h-4" />
@@ -421,12 +452,16 @@ export default function ProfilePage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-lg font-semibold text-foreground">${order.total}</div>
-                              <Badge 
+                              <div className="text-lg font-semibold text-foreground">
+                                ${order.total}
+                              </div>
+                              <Badge
                                 className={`${
-                                  order.status === "Delivered" ? "bg-green-100 text-green-800" :
-                                  order.status === "Shipped" ? "bg-blue-100 text-blue-800" :
-                                  "bg-yellow-100 text-yellow-800"
+                                  order.status === "Delivered"
+                                    ? "bg-green-100 text-green-800"
+                                    : order.status === "Shipped"
+                                      ? "bg-blue-100 text-blue-800"
+                                      : "bg-yellow-100 text-yellow-800"
                                 }`}
                               >
                                 {order.status}
@@ -444,17 +479,29 @@ export default function ProfilePage() {
               {activeTab === "wishlist" && (
                 <div className="space-y-6">
                   <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-bold text-foreground mb-6">Your Wishlist</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-6">
+                      Your Wishlist
+                    </h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {wishlistItems.map((item) => (
-                        <div key={item.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                        <div
+                          key={item.id}
+                          className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+                        >
                           <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
                             <Heart className="w-8 h-8 text-gray-400" />
                           </div>
-                          <h3 className="font-semibold text-foreground mb-2">{item.name}</h3>
+                          <h3 className="font-semibold text-foreground mb-2">
+                            {item.name}
+                          </h3>
                           <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-foreground">${item.price}</span>
-                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                            <span className="text-lg font-bold text-foreground">
+                              ${item.price}
+                            </span>
+                            <Button
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
                               Add to Cart
                             </Button>
                           </div>
@@ -469,32 +516,55 @@ export default function ProfilePage() {
               {activeTab === "settings" && (
                 <div className="space-y-6">
                   <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-bold text-foreground mb-6">Account Settings</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-6">
+                      Account Settings
+                    </h2>
                     <div className="space-y-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">Change Password</h3>
-                          <p className="text-sm text-gray-500">Update your account password</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            Change Password
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Update your account password
+                          </p>
                         </div>
-                        <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                        <Button
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-50"
+                        >
                           Change
                         </Button>
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">Two-Factor Authentication</h3>
-                          <p className="text-sm text-gray-500">Add an extra layer of security</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            Two-Factor Authentication
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Add an extra layer of security
+                          </p>
                         </div>
-                        <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                        <Button
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-50"
+                        >
                           Enable
                         </Button>
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-medium text-foreground">Delete Account</h3>
-                          <p className="text-sm text-gray-500">Permanently delete your account</p>
+                          <h3 className="text-sm font-medium text-foreground">
+                            Delete Account
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Permanently delete your account
+                          </p>
                         </div>
-                        <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50">
+                        <Button
+                          variant="outline"
+                          className="border-red-600 text-red-600 hover:bg-red-50"
+                        >
                           Delete
                         </Button>
                       </div>

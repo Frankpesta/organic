@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
-import { getCountryFromIP } from '@/lib/ip-detection';
+import { NextResponse } from "next/server";
+import { getCountryFromIP } from "@/lib/ip-detection";
 
 export async function GET() {
   try {
     const locationData = await getCountryFromIP();
-    
+
     if (!locationData) {
       return NextResponse.json(
-        { error: 'Failed to detect country' },
-        { status: 500 }
+        { error: "Failed to detect country" },
+        { status: 500 },
       );
     }
 
@@ -19,10 +19,10 @@ export async function GET() {
       region: locationData.region,
     });
   } catch (error) {
-    console.error('Country detection error:', error);
+    console.error("Country detection error:", error);
     return NextResponse.json(
-      { error: 'Failed to detect country' },
-      { status: 500 }
+      { error: "Failed to detect country" },
+      { status: 500 },
     );
   }
 }

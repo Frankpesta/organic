@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { ClerkProvider } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Loader2, AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { Manrope } from "next/font/google";
-import { ClerkProvider } from '@clerk/nextjs';
-import ConvexClientProvider from '@/components/ConvexClientProvider';
-import { Sidebar, MobileSidebar } from '@/components/admin/Sidebar';
-import { Header } from '@/components/admin/Header';
-import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Toaster } from "sonner";
+import { Header } from "@/components/admin/Header";
+import { MobileSidebar, Sidebar } from "@/components/admin/Sidebar";
+import ConvexClientProvider from "@/components/ConvexClientProvider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
+import { api } from "@/convex/_generated/api";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -31,10 +31,10 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (adminCheck !== undefined) {
       setIsLoading(false);
-      
+
       if (!adminCheck.isAdmin) {
         // Redirect non-admin users to unauthorized page
-        router.push('/unauthorized');
+        router.push("/unauthorized");
       }
     }
   }, [adminCheck, router]);
@@ -47,13 +47,13 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileMenuOpen) {
+      if (e.key === "Escape" && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isMobileMenuOpen]);
 
   if (isLoading || adminCheck === undefined) {
@@ -72,11 +72,16 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center max-w-md">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-foreground mb-2">Access Denied</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Access Denied
+          </h1>
           <p className="text-muted-foreground mb-6">
             You don't have admin privileges to access this area.
           </p>
-          <Button onClick={() => router.push('/')} className="bg-green-600 hover:bg-green-700">
+          <Button
+            onClick={() => router.push("/")}
+            className="bg-green-600 hover:bg-green-700"
+          >
             Return to Home
           </Button>
         </div>
@@ -87,9 +92,9 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <MobileSidebar 
-        isOpen={isMobileMenuOpen} 
-        onClose={() => setIsMobileMenuOpen(false)} 
+      <MobileSidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
       />
       <div className="lg:pl-64">
         <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
@@ -106,7 +111,7 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -122,9 +127,7 @@ export default function AdminLayout({
             disableTransitionOnChange
           >
             <ConvexClientProvider>
-              <AdminAuthWrapper>
-                {children}
-              </AdminAuthWrapper>
+              <AdminAuthWrapper>{children}</AdminAuthWrapper>
               <Toaster position="top-right" richColors />
             </ConvexClientProvider>
           </ThemeProvider>
@@ -133,5 +136,3 @@ export default function AdminLayout({
     </html>
   );
 }
-
-

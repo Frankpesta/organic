@@ -8,7 +8,11 @@ interface SEOHeadProps {
   faqData?: any;
 }
 
-export function SEOHead({ structuredData, breadcrumbData, faqData }: SEOHeadProps) {
+export function SEOHead({
+  structuredData,
+  breadcrumbData,
+  faqData,
+}: SEOHeadProps) {
   return (
     <Head>
       {structuredData && (

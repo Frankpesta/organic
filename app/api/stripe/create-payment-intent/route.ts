@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createPaymentIntent } from '@/lib/stripe';
+import { type NextRequest, NextResponse } from "next/server";
+import { createPaymentIntent } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,8 +8,8 @@ export async function POST(request: NextRequest) {
 
     if (!amount || !currency || !orderId || !userId) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: "Missing required fields" },
+        { status: 400 },
       );
     }
 
@@ -24,10 +24,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(paymentIntent);
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error("Error creating payment intent:", error);
     return NextResponse.json(
-      { error: 'Failed to create payment intent' },
-      { status: 500 }
+      { error: "Failed to create payment intent" },
+      { status: 500 },
     );
   }
 }

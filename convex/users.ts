@@ -24,7 +24,7 @@ export const createUser = mutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
-    
+
     return await ctx.db.insert("users", {
       ...args,
       createdAt: now,
@@ -43,7 +43,7 @@ export const updateUser = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    
+
     return await ctx.db.patch(id, {
       ...updates,
       updatedAt: Date.now(),
@@ -62,9 +62,6 @@ export const getUserById = query({
 // Get all users (Admin only)
 export const getAllUsers = query({
   handler: async (ctx) => {
-    return await ctx.db
-      .query("users")
-      .order("desc")
-      .collect();
+    return await ctx.db.query("users").order("desc").collect();
   },
 });

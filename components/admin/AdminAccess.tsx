@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { AlertCircle, ArrowRight, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, ArrowRight, AlertCircle } from "lucide-react";
-import { toast } from "sonner";
 
 // Admin email - only this user can access admin
 const ADMIN_EMAIL = "admin@helensbeautysecret.com";
@@ -29,7 +35,9 @@ export function AdminAccess() {
 
     // Check if user is the admin
     if (user?.emailAddresses[0]?.emailAddress !== ADMIN_EMAIL) {
-      setError("Access denied. This area is restricted to authorized personnel only.");
+      setError(
+        "Access denied. This area is restricted to authorized personnel only.",
+      );
       toast.error("Access denied");
       return;
     }
@@ -63,15 +71,12 @@ export function AdminAccess() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button 
-              onClick={() => router.push("/sign-in")} 
-              className="w-full"
-            >
+            <Button onClick={() => router.push("/sign-in")} className="w-full">
               Sign In
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => router.push("/sign-up")} 
+            <Button
+              variant="outline"
+              onClick={() => router.push("/sign-up")}
               className="w-full"
             >
               Sign Up
@@ -114,7 +119,7 @@ export function AdminAccess() {
             </Alert>
           )}
 
-          <Button 
+          <Button
             onClick={handleAdminAccess}
             disabled={isLoading || !adminCode}
             className="w-full"

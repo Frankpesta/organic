@@ -1,18 +1,18 @@
 import {
   Body,
+  Button,
+  Column,
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
   Preview,
+  Row,
   Section,
   Text,
-  Hr,
-  Row,
-  Column,
-  Button,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -67,13 +67,12 @@ export const ShippingConfirmationEmail = ({
           {/* Main Content */}
           <Section style={content}>
             <Heading style={h1}>Your Order is on the Way! 📦</Heading>
-            
+
+            <Text style={text}>Hi {customerName},</Text>
+
             <Text style={text}>
-              Hi {customerName},
-            </Text>
-            
-            <Text style={text}>
-              Great news! Your order #{orderNumber} has been shipped and is on its way to you.
+              Great news! Your order #{orderNumber} has been shipped and is on
+              its way to you.
             </Text>
 
             {/* Tracking Information */}
@@ -91,7 +90,7 @@ export const ShippingConfirmationEmail = ({
                   <br />
                   <strong>Estimated Delivery:</strong> {estimatedDelivery}
                 </Text>
-                
+
                 <Button
                   href={`https://www.google.com/search?q=${trackingNumber}`}
                   style={trackingButton}
@@ -128,7 +127,8 @@ export const ShippingConfirmationEmail = ({
                   </>
                 )}
                 <br />
-                {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postalCode}
+                {shippingAddress.city}, {shippingAddress.state}{" "}
+                {shippingAddress.postalCode}
                 <br />
                 {shippingAddress.country}
               </Text>
@@ -141,10 +141,8 @@ export const ShippingConfirmationEmail = ({
               <Heading style={h2}>What to Expect</Heading>
               <Text style={text}>
                 • Your package will arrive within the estimated delivery time
-                <br />
-                • You'll receive delivery notifications from the carrier
-                <br />
-                • If you have any questions, contact us at{" "}
+                <br />• You'll receive delivery notifications from the carrier
+                <br />• If you have any questions, contact us at{" "}
                 <Link href="mailto:support@helensbeautysecret.com" style={link}>
                   support@helensbeautysecret.com
                 </Link>
@@ -184,7 +182,8 @@ export const ShippingConfirmationEmail = ({
 // Styles
 const main = {
   backgroundColor: "#f6f9fc",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

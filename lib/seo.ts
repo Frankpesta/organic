@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 interface SEOConfig {
   title: string;
@@ -26,7 +26,7 @@ export function generateMetadata(config: SEOConfig): Metadata {
     currency = "USD",
     availability,
     brand = "Helen's Beauty Secret",
-    category
+    category,
   } = config;
 
   const fullTitle = `${title} | ${brand}`;
@@ -41,7 +41,7 @@ export function generateMetadata(config: SEOConfig): Metadata {
       "vegan skincare",
       "clean beauty",
       "Helen's Beauty Secret",
-      ...keywords
+      ...keywords,
     ],
     authors: [{ name: brand }],
     creator: brand,
@@ -115,7 +115,7 @@ export function generateStructuredData(config: SEOConfig) {
     currency = "USD",
     availability = "in stock",
     brand = "Helen's Beauty Secret",
-    category = "Skincare"
+    category = "Skincare",
   } = config;
 
   const baseStructuredData = {
@@ -166,7 +166,9 @@ export function generateStructuredData(config: SEOConfig) {
   return baseStructuredData;
 }
 
-export function generateBreadcrumbStructuredData(items: Array<{ name: string; url: string }>) {
+export function generateBreadcrumbStructuredData(
+  items: Array<{ name: string; url: string }>,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -179,7 +181,9 @@ export function generateBreadcrumbStructuredData(items: Array<{ name: string; ur
   };
 }
 
-export function generateFAQStructuredData(faqs: Array<{ question: string; answer: string }>) {
+export function generateFAQStructuredData(
+  faqs: Array<{ question: string; answer: string }>,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

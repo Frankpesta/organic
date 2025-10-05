@@ -1,6 +1,5 @@
-import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
-import { ConvexError } from "convex/values";
+import { ConvexError, v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 
 // Helper function to get current user from Clerk
 export async function getCurrentUser(ctx: any) {
@@ -24,7 +23,7 @@ export async function getCurrentUser(ctx: any) {
 // Helper function to verify admin role
 export async function requireAdmin(ctx: any) {
   const user = await getCurrentUser(ctx);
-  
+
   if (user.role !== "admin") {
     throw new ConvexError("Admin access required");
   }
@@ -98,7 +97,7 @@ export const createOrUpdateUser = mutation({
       });
 
       const newUser = await ctx.db.get(userId);
-      
+
       // Send welcome email for new customers
       if (newUser && newUser.role === "customer") {
         try {

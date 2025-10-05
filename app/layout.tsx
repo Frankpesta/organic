@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from '@clerk/nextjs'
-import ConvexClientProvider from '@/components/ConvexClientProvider'
-import { ThemeProvider } from '@/components/theme-provider'
-import { Cart } from '@/components/Cart'
-import { UserSync } from '@/components/UserSync'
-import { Toaster } from 'sonner'
-import { PPPProvider } from '@/lib/contexts/PPPContext'
+import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
+import { Cart } from "@/components/Cart";
+import ConvexClientProvider from "@/components/ConvexClientProvider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { UserSync } from "@/components/UserSync";
+import { PPPProvider } from "@/lib/contexts/PPPContext";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -18,19 +18,28 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "Helen's Beauty Secret - Organic Skincare",
-  description: "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion with gentle, effective care.",
-  keywords: ["organic skincare", "natural beauty", "vegan skincare", "clean beauty", "Helen's Beauty Secret"],
+  description:
+    "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion with gentle, effective care.",
+  keywords: [
+    "organic skincare",
+    "natural beauty",
+    "vegan skincare",
+    "clean beauty",
+    "Helen's Beauty Secret",
+  ],
   authors: [{ name: "Helen's Beauty Secret" }],
   openGraph: {
     title: "Helen's Beauty Secret - Organic Skincare",
-    description: "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion.",
+    description:
+      "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Helen's Beauty Secret - Organic Skincare",
-    description: "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion.",
+    description:
+      "Discover the transformative power of organic skincare. Pure, potent ingredients to revitalize your complexion.",
   },
 };
 
@@ -52,11 +61,7 @@ export default function RootLayout({
             >
               <PPPProvider>
                 <div className="min-h-screen flex flex-col">
-                 
-                  <main className="flex-1">
-                    {children}
-                  </main>
-                
+                  <main className="flex-1">{children}</main>
                 </div>
                 <Cart />
                 <UserSync />

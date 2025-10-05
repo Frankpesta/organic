@@ -1,17 +1,17 @@
 import {
   Body,
+  Column,
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
   Preview,
+  Row,
   Section,
   Text,
-  Hr,
-  Row,
-  Column,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -79,13 +79,12 @@ export const OrderConfirmationEmail = ({
           {/* Main Content */}
           <Section style={content}>
             <Heading style={h1}>Order Confirmed! 🎉</Heading>
-            
+
+            <Text style={text}>Hi {customerName},</Text>
+
             <Text style={text}>
-              Hi {customerName},
-            </Text>
-            
-            <Text style={text}>
-              Thank you for your order! We're excited to prepare your organic skincare products for you.
+              Thank you for your order! We're excited to prepare your organic
+              skincare products for you.
             </Text>
 
             {/* Order Details */}
@@ -151,7 +150,8 @@ export const OrderConfirmationEmail = ({
                   </>
                 )}
                 <br />
-                {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postalCode}
+                {shippingAddress.city}, {shippingAddress.state}{" "}
+                {shippingAddress.postalCode}
                 <br />
                 {shippingAddress.country}
               </Text>
@@ -175,14 +175,16 @@ export const OrderConfirmationEmail = ({
             <Section style={nextSteps}>
               <Heading style={h2}>What's Next?</Heading>
               <Text style={text}>
-                • You'll receive a shipping confirmation email once your order is dispatched
-                <br />
-                • Track your order status in your{" "}
-                <Link href="https://helensbeautysecret.com/dashboard" style={link}>
+                • You'll receive a shipping confirmation email once your order
+                is dispatched
+                <br />• Track your order status in your{" "}
+                <Link
+                  href="https://helensbeautysecret.com/dashboard"
+                  style={link}
+                >
                   dashboard
                 </Link>
-                <br />
-                • Questions? Contact us at{" "}
+                <br />• Questions? Contact us at{" "}
                 <Link href="mailto:support@helensbeautysecret.com" style={link}>
                   support@helensbeautysecret.com
                 </Link>
@@ -212,7 +214,8 @@ export const OrderConfirmationEmail = ({
 // Styles
 const main = {
   backgroundColor: "#f6f9fc",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

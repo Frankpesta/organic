@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from 'react';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Globe, MapPin, DollarSign } from 'lucide-react';
-import { calculatePPP, formatPrice, getCurrencySymbol } from '@/lib/ppp';
+import { DollarSign, Globe, MapPin } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { calculatePPP, formatPrice, getCurrencySymbol } from "@/lib/ppp";
 
 interface PPTToggleProps {
   isEnabled: boolean;
@@ -15,12 +15,12 @@ interface PPTToggleProps {
   className?: string;
 }
 
-export function PPTToggle({ 
-  isEnabled, 
-  onToggle, 
-  detectedCountry, 
+export function PPTToggle({
+  isEnabled,
+  onToggle,
+  detectedCountry,
   samplePrice,
-  className = "" 
+  className = "",
 }: PPTToggleProps) {
   const [isDetecting, setIsDetecting] = useState(false);
 
@@ -28,15 +28,15 @@ export function PPTToggle({
     if (checked && !detectedCountry) {
       setIsDetecting(true);
       // Trigger country detection
-      fetch('/api/detect-country')
-        .then(response => response.json())
-        .then(data => {
+      fetch("/api/detect-country")
+        .then((response) => response.json())
+        .then((data) => {
           if (data.countryCode) {
             onToggle(true);
           }
         })
-        .catch(error => {
-          console.error('Failed to detect country:', error);
+        .catch((error) => {
+          console.error("Failed to detect country:", error);
           onToggle(false);
         })
         .finally(() => {
@@ -47,9 +47,14 @@ export function PPTToggle({
     }
   };
 
-  const pppResult = detectedCountry && isEnabled 
-    ? calculatePPP(samplePrice, detectedCountry) 
-    : { adjustedPrice: samplePrice, currency: 'USD', originalPrice: samplePrice };
+  const pppResult =
+    detectedCountry && isEnabled
+      ? calculatePPP(samplePrice, detectedCountry)
+      : {
+          adjustedPrice: samplePrice,
+          currency: "USD",
+          originalPrice: samplePrice,
+        };
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -62,10 +67,9 @@ export function PPTToggle({
               Regional Pricing (PPP)
             </Label>
             <p className="text-sm text-muted-foreground">
-              {detectedCountry 
-                ? `Detected: ${detectedCountry}` 
-                : 'Auto-detect your location for local pricing'
-              }
+              {detectedCountry
+                ? `Detected: ${detectedCountry}`
+                : "Auto-detect your location for local pricing"}
             </p>
           </div>
         </div>
@@ -85,20 +89,27 @@ export function PPTToggle({
               <MapPin className="h-4 w-4 text-green-600" />
               <span className="text-sm font-medium">Local Pricing</span>
             </div>
-            <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+            <Badge
+              variant="secondary"
+              className="bg-green-100 text-green-800 border-green-200"
+            >
               {getCurrencySymbol(pppResult.currency)}
             </Badge>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Original Price:</span>
+              <span className="text-sm text-muted-foreground">
+                Original Price:
+              </span>
               <span className="text-sm font-medium">
-                {formatPrice(pppResult.originalPrice, 'USD')}
+                {formatPrice(pppResult.originalPrice, "USD")}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Local Price:</span>
+              <span className="text-sm text-muted-foreground">
+                Local Price:
+              </span>
               <span className="text-lg font-bold text-green-600">
                 {formatPrice(pppResult.adjustedPrice, pppResult.currency)}
               </span>

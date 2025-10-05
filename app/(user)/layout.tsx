@@ -8,7 +8,7 @@ export default function UserLayout({
 }>) {
   return (
     <>
-    <Navbar />
+      <Navbar />
       {children}
       <Footer />
     </>

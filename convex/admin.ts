@@ -13,9 +13,15 @@ export const getDashboardStats = query({
       topProducts,
     ] = await Promise.all([
       ctx.db.query("users").collect(),
-      ctx.db.query("products").filter((q) => q.eq(q.field("isActive"), true)).collect(),
+      ctx.db
+        .query("products")
+        .filter((q) => q.eq(q.field("isActive"), true))
+        .collect(),
       ctx.db.query("orders").collect(),
-      ctx.db.query("orders").filter((q) => q.eq(q.field("paymentStatus"), "paid")).collect(),
+      ctx.db
+        .query("orders")
+        .filter((q) => q.eq(q.field("paymentStatus"), "paid"))
+        .collect(),
       ctx.db.query("orders").order("desc").take(5),
       ctx.db.query("orderItems").collect(),
     ]);
@@ -25,23 +31,29 @@ export const getDashboardStats = query({
 
     // Calculate order status breakdown
     const orderStats = {
-      pending: totalOrders.filter(o => o.status === "pending").length,
-      processing: totalOrders.filter(o => o.status === "processing").length,
-      shipped: totalOrders.filter(o => o.status === "shipped").length,
-      delivered: totalOrders.filter(o => o.status === "delivered").length,
-      cancelled: totalOrders.filter(o => o.status === "cancelled").length,
+      pending: totalOrders.filter((o) => o.status === "pending").length,
+      processing: totalOrders.filter((o) => o.status === "processing").length,
+      shipped: totalOrders.filter((o) => o.status === "shipped").length,
+      delivered: totalOrders.filter((o) => o.status === "delivered").length,
+      cancelled: totalOrders.filter((o) => o.status === "cancelled").length,
     };
 
     // Calculate top products
-    const productSales = topProducts.reduce((acc, item) => {
-      const productId = item.productId;
-      if (!acc[productId]) {
-        acc[productId] = { productId, totalSold: 0, revenue: 0 };
-      }
-      acc[productId].totalSold += item.quantity;
-      acc[productId].revenue += item.total;
-      return acc;
-    }, {} as Record<string, { productId: string; totalSold: number; revenue: number }>);
+    const productSales = topProducts.reduce(
+      (acc, item) => {
+        const productId = item.productId;
+        if (!acc[productId]) {
+          acc[productId] = { productId, totalSold: 0, revenue: 0 };
+        }
+        acc[productId].totalSold += item.quantity;
+        acc[productId].revenue += item.total;
+        return acc;
+      },
+      {} as Record<
+        string,
+        { productId: string; totalSold: number; revenue: number }
+      >,
+    );
 
     const topProductsList = Object.values(productSales)
       .sort((a, b) => b.totalSold - a.totalSold)
@@ -53,12 +65,14 @@ export const getDashboardStats = query({
         const product = await ctx.db.get(item.productId as any);
         return {
           ...item,
-          product: product ? {
-            name: product.name,
-            images: product.images,
-          } : null,
+          product: product
+            ? {
+                name: product.name,
+                images: product.images,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     // Get recent orders with user details
@@ -67,13 +81,15 @@ export const getDashboardStats = query({
         const user = await ctx.db.get(order.userId);
         return {
           ...order,
-          user: user ? {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          } : null,
+          user: user
+            ? {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     return {
@@ -82,7 +98,8 @@ export const getDashboardStats = query({
         totalProducts: totalProducts.length,
         totalOrders: totalOrders.length,
         totalRevenue: revenue,
-        averageOrderValue: totalOrders.length > 0 ? revenue / totalOrders.length : 0,
+        averageOrderValue:
+          totalOrders.length > 0 ? revenue / totalOrders.length : 0,
       },
       orderStats,
       recentOrders: recentOrdersWithUsers,
@@ -104,9 +121,7 @@ export const getUsers = query({
       query = query.filter((q) => q.eq(q.field("role"), args.role));
     }
 
-    return await query
-      .order("desc")
-      .take(args.limit || 50);
+    return await query.order("desc").take(args.limit || 50);
   },
 });
 
@@ -139,7 +154,7 @@ export const getAnalytics = query({
       .collect();
 
     if (args.metric) {
-      return analytics.filter(a => a.metric === args.metric);
+      return analytics.filter((a) => a.metric === args.metric);
     }
 
     return analytics;
@@ -151,16 +166,18 @@ export const recordAnalytics = mutation({
   args: {
     metric: v.string(),
     value: v.number(),
-    metadata: v.optional(v.object({
-      page: v.optional(v.string()),
-      productId: v.optional(v.id("products")),
-      categoryId: v.optional(v.id("categories")),
-      country: v.optional(v.string()),
-    })),
+    metadata: v.optional(
+      v.object({
+        page: v.optional(v.string()),
+        productId: v.optional(v.id("products")),
+        categoryId: v.optional(v.id("categories")),
+        country: v.optional(v.string()),
+      }),
+    ),
   },
   handler: async (ctx, args) => {
-    const today = new Date().toISOString().split('T')[0];
-    
+    const today = new Date().toISOString().split("T")[0];
+
     // Check if record exists for today
     const existing = await ctx.db
       .query("analytics")
@@ -189,11 +206,14 @@ export const recordAnalytics = mutation({
 export const getSettings = query({
   handler: async (ctx) => {
     const settings = await ctx.db.query("settings").collect();
-    
-    return settings.reduce((acc, setting) => {
-      acc[setting.key] = setting.value;
-      return acc;
-    }, {} as Record<string, any>);
+
+    return settings.reduce(
+      (acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
   },
 });
 

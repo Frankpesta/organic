@@ -1,5 +1,5 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 
 // Generate upload URL for file uploads
 export const generateUploadUrl = mutation({
@@ -65,7 +65,7 @@ export const getMultipleFileUrls = query({
       args.storageIds.map(async (storageId) => {
         const url = await ctx.storage.getUrl(storageId);
         return { storageId, url };
-      })
+      }),
     );
     return urls;
   },
@@ -83,7 +83,7 @@ export const deleteMultipleFiles = mutation({
     await Promise.all(
       args.storageIds.map(async (storageId) => {
         await ctx.storage.delete(storageId);
-      })
+      }),
     );
   },
 });

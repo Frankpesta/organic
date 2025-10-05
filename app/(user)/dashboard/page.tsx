@@ -1,51 +1,61 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
-import { api } from "@/convex/_generated/api";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Package, 
-  Heart, 
-  User, 
-  MapPin, 
-  CreditCard, 
+import { useQuery } from "convex/react";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  CreditCard,
+  Edit,
+  Eye,
+  Heart,
+  MapPin,
+  Package,
   Settings,
   ShoppingBag,
   Star,
-  Calendar,
+  Trash2,
   Truck,
-  CheckCircle,
-  Clock,
+  User,
   XCircle,
-  Eye,
-  Edit,
-  Trash2
 } from "lucide-react";
-import { useWishlistStore } from "@/lib/stores/wishlistStore";
-import { useCartStore } from "@/lib/stores/cartStore";
-import { formatPrice } from "@/lib/ppp";
-import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { api } from "@/convex/_generated/api";
+import { formatPrice } from "@/lib/ppp";
+import { useCartStore } from "@/lib/stores/cartStore";
+import { useWishlistStore } from "@/lib/stores/wishlistStore";
 
 export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
-  const { items: wishlistItems, removeItem, clearWishlist } = useWishlistStore();
+  const {
+    items: wishlistItems,
+    removeItem,
+    clearWishlist,
+  } = useWishlistStore();
   const { addItem } = useCartStore();
   const { user: clerkUser, isLoaded } = useUser();
 
   // Calculate total spending in USD
   const calculateTotalSpendingUSD = (orders: any[]) => {
     if (!orders || orders.length === 0) return 0;
-    
+
     return orders.reduce((total, order) => {
       // Convert to USD if needed (simplified - in real app, use current exchange rates)
-      if (order.currency === 'USD') {
+      if (order.currency === "USD") {
         return total + order.total;
       } else {
         // For now, just add the total as-is. In a real app, you'd convert using current exchange rates
@@ -55,11 +65,13 @@ export default function UserDashboard() {
   };
 
   // Get user orders only if authenticated
-  const orders = useQuery(api.orders.getCurrentUserOrders, 
-    clerkUser ? {} : "skip"
+  const orders = useQuery(
+    api.orders.getCurrentUserOrders,
+    clerkUser ? {} : "skip",
   );
-  const user = useQuery(api.auth.getCurrentUserWithRole, 
-    clerkUser ? {} : "skip"
+  const user = useQuery(
+    api.auth.getCurrentUserWithRole,
+    clerkUser ? {} : "skip",
   );
 
   const handleMoveToCart = (item: any) => {
@@ -81,32 +93,32 @@ export default function UserDashboard() {
 
   const getOrderStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered':
-        return 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300';
-      case 'shipped':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300';
-      case 'processing':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300';
-      case 'pending':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300';
+      case "delivered":
+        return "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300";
+      case "shipped":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300";
+      case "processing":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300";
+      case "pending":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100";
+      case "cancelled":
+        return "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300";
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100';
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100";
     }
   };
 
   const getOrderStatusIcon = (status: string) => {
     switch (status) {
-      case 'delivered':
+      case "delivered":
         return <CheckCircle className="w-4 h-4" />;
-      case 'shipped':
+      case "shipped":
         return <Truck className="w-4 h-4" />;
-      case 'processing':
+      case "processing":
         return <Clock className="w-4 h-4" />;
-      case 'pending':
+      case "pending":
         return <Clock className="w-4 h-4" />;
-      case 'cancelled':
+      case "cancelled":
         return <XCircle className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
@@ -130,8 +142,12 @@ export default function UserDashboard() {
     return (
       <div className="min-h-screen bg-background pt-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Authentication Required</h1>
-          <p className="text-muted-foreground mb-6">Please sign in to access your dashboard</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Authentication Required
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            Please sign in to access your dashboard
+          </p>
           <Link href="/sign-in">
             <Button>Sign In</Button>
           </Link>
@@ -158,10 +174,20 @@ export default function UserDashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">My Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {user?.firstName || clerkUser.firstName || clerkUser.primaryEmailAddress?.emailAddress}!</p>
+          <p className="text-muted-foreground">
+            Welcome back,{" "}
+            {user?.firstName ||
+              clerkUser.firstName ||
+              clerkUser.primaryEmailAddress?.emailAddress}
+            !
+          </p>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
@@ -175,24 +201,34 @@ export default function UserDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Orders
+                  </CardTitle>
                   <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{orders?.length || 0}</div>
+                  <div className="text-2xl font-bold">
+                    {orders?.length || 0}
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    {orders?.filter(o => o.status === 'delivered').length || 0} completed
+                    {orders?.filter((o) => o.status === "delivered").length ||
+                      0}{" "}
+                    completed
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Wishlist Items</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Wishlist Items
+                  </CardTitle>
                   <Heart className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{wishlistItems.length}</div>
+                  <div className="text-2xl font-bold">
+                    {wishlistItems.length}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Items saved for later
                   </p>
@@ -201,7 +237,9 @@ export default function UserDashboard() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Spent
+                  </CardTitle>
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -216,7 +254,9 @@ export default function UserDashboard() {
                       {orders.map((order, index) => (
                         <div key={order._id} className="flex justify-between">
                           <span>Order #{order.orderNumber}:</span>
-                          <span>{formatPrice(order.total, order.currency || 'USD')}</span>
+                          <span>
+                            {formatPrice(order.total, order.currency || "USD")}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -235,30 +275,41 @@ export default function UserDashboard() {
                 {orders && orders.length > 0 ? (
                   <div className="space-y-4">
                     {orders.slice(0, 3).map((order) => (
-                      <div key={order._id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div
+                        key={order._id}
+                        className="flex items-center justify-between p-4 border rounded-lg"
+                      >
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
                             <Package className="w-5 h-5 text-muted-foreground" />
                           </div>
                           <div>
-                            <p className="font-medium">Order #{order.orderNumber}</p>
+                            <p className="font-medium">
+                              Order #{order.orderNumber}
+                            </p>
                             <p className="text-sm text-muted-foreground">
-                              {new Date(order._creationTime).toLocaleDateString()}
+                              {new Date(
+                                order._creationTime,
+                              ).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className="font-bold">
-                            {formatPrice(order.total, order.currency || 'USD')}
+                            {formatPrice(order.total, order.currency || "USD")}
                           </p>
                           <Badge className={getOrderStatusColor(order.status)}>
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            {order.status.charAt(0).toUpperCase() +
+                              order.status.slice(1)}
                           </Badge>
                         </div>
                       </div>
                     ))}
                     <div className="text-center pt-4">
-                      <Button variant="outline" onClick={() => setActiveTab("orders")}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setActiveTab("orders")}
+                      >
                         View All Orders
                       </Button>
                     </div>
@@ -290,31 +341,50 @@ export default function UserDashboard() {
                       <div key={order._id} className="border rounded-lg p-6">
                         <div className="flex items-center justify-between mb-4">
                           <div>
-                            <h3 className="font-semibold">Order #{order.orderNumber}</h3>
+                            <h3 className="font-semibold">
+                              Order #{order.orderNumber}
+                            </h3>
                             <p className="text-sm text-muted-foreground">
-                              Placed on {new Date(order._creationTime).toLocaleDateString()}
+                              Placed on{" "}
+                              {new Date(
+                                order._creationTime,
+                              ).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="text-right">
                             <p className="text-lg font-bold">
-                              {formatPrice(order.total, order.currency || 'USD')}
+                              {formatPrice(
+                                order.total,
+                                order.currency || "USD",
+                              )}
                             </p>
-                            <Badge className={getOrderStatusColor(order.status)}>
+                            <Badge
+                              className={getOrderStatusColor(order.status)}
+                            >
                               {getOrderStatusIcon(order.status)}
                               <span className="ml-1">
-                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                {order.status.charAt(0).toUpperCase() +
+                                  order.status.slice(1)}
                               </span>
                             </Badge>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
-                            <h4 className="font-medium mb-2">Shipping Address</h4>
+                            <h4 className="font-medium mb-2">
+                              Shipping Address
+                            </h4>
                             <p className="text-sm text-muted-foreground">
-                              {order.shippingAddress?.firstName} {order.shippingAddress?.lastName}<br />
-                              {order.shippingAddress?.address1}<br />
-                              {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.postalCode}<br />
+                              {order.shippingAddress?.firstName}{" "}
+                              {order.shippingAddress?.lastName}
+                              <br />
+                              {order.shippingAddress?.address1}
+                              <br />
+                              {order.shippingAddress?.city},{" "}
+                              {order.shippingAddress?.state}{" "}
+                              {order.shippingAddress?.postalCode}
+                              <br />
                               {order.shippingAddress?.country}
                             </p>
                           </div>
@@ -322,14 +392,19 @@ export default function UserDashboard() {
                             <h4 className="font-medium mb-2">Order Items</h4>
                             <div className="space-y-1">
                               {order.items?.map((item: any, index: number) => (
-                                <div key={index} className="text-sm text-muted-foreground">
-                                  {item.quantity}x {item.product?.name || `Product #${item.productId?.slice(-8) || 'Unknown'}`}
+                                <div
+                                  key={index}
+                                  className="text-sm text-muted-foreground"
+                                >
+                                  {item.quantity}x{" "}
+                                  {item.product?.name ||
+                                    `Product #${item.productId?.slice(-8) || "Unknown"}`}
                                 </div>
                               ))}
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex justify-end">
                           <Button variant="outline" size="sm">
                             <Eye className="w-4 h-4 mr-2" />
@@ -363,7 +438,10 @@ export default function UserDashboard() {
                 {wishlistItems.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {wishlistItems.map((item) => (
-                      <div key={item.productId} className="border rounded-lg p-4 group">
+                      <div
+                        key={item.productId}
+                        className="border rounded-lg p-4 group"
+                      >
                         <div className="aspect-square bg-muted rounded-lg mb-3 relative">
                           {item.image ? (
                             <Image
@@ -378,7 +456,9 @@ export default function UserDashboard() {
                             </div>
                           )}
                         </div>
-                        <h3 className="font-medium mb-2 line-clamp-2">{item.name}</h3>
+                        <h3 className="font-medium mb-2 line-clamp-2">
+                          {item.name}
+                        </h3>
                         <p className="text-lg font-bold mb-3">${item.price}</p>
                         <div className="flex space-x-2">
                           <Button
@@ -392,7 +472,9 @@ export default function UserDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleRemoveFromWishlist(item.productId)}
+                            onClick={() =>
+                              handleRemoveFromWishlist(item.productId)
+                            }
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -403,7 +485,9 @@ export default function UserDashboard() {
                 ) : (
                   <div className="text-center py-8">
                     <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Your wishlist is empty</p>
+                    <p className="text-muted-foreground">
+                      Your wishlist is empty
+                    </p>
                     <Link href="/shop">
                       <Button className="mt-4">Start Shopping</Button>
                     </Link>
@@ -425,23 +509,50 @@ export default function UserDashboard() {
                   <div>
                     <h4 className="font-medium mb-2">Personal Information</h4>
                     <div className="space-y-2">
-                      <p><span className="text-muted-foreground">Name:</span> {user?.firstName || clerkUser.firstName} {user?.lastName || clerkUser.lastName}</p>
-                      <p><span className="text-muted-foreground">Email:</span> {user?.email || clerkUser.primaryEmailAddress?.emailAddress}</p>
-                      <p><span className="text-muted-foreground">Member since:</span> {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recently joined'}</p>
+                      <p>
+                        <span className="text-muted-foreground">Name:</span>{" "}
+                        {user?.firstName || clerkUser.firstName}{" "}
+                        {user?.lastName || clerkUser.lastName}
+                      </p>
+                      <p>
+                        <span className="text-muted-foreground">Email:</span>{" "}
+                        {user?.email ||
+                          clerkUser.primaryEmailAddress?.emailAddress}
+                      </p>
+                      <p>
+                        <span className="text-muted-foreground">
+                          Member since:
+                        </span>{" "}
+                        {user?.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : "Recently joined"}
+                      </p>
                     </div>
                   </div>
                   <div>
                     <h4 className="font-medium mb-2">Account Actions</h4>
                     <div className="space-y-2">
-                      <Button variant="outline" size="sm" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Profile
                       </Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
                         <MapPin className="w-4 h-4 mr-2" />
                         Manage Addresses
                       </Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Payment Methods
                       </Button>

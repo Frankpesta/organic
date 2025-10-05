@@ -1,9 +1,9 @@
 "use server";
 
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@/convex/_generated/api";
 import { auth } from "@clerk/nextjs/server";
+import { ConvexHttpClient } from "convex/browser";
 import { revalidatePath } from "next/cache";
+import { api } from "@/convex/_generated/api";
 import { sendOrderConfirmationEmail } from "@/lib/services/emailService";
 
 export async function createOrder(formData: {
@@ -43,37 +43,41 @@ export async function createOrder(formData: {
 }) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      throw new Error('Unauthorized');
+      throw new Error("Unauthorized");
     }
 
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
     // Get or create user in Convex
-    let convexUser = await convex.query(api.users.getUserByClerkId, { clerkId: userId });
-    
+    let convexUser = await convex.query(api.users.getUserByClerkId, {
+      clerkId: userId,
+    });
+
     if (!convexUser) {
       // Create user if doesn't exist
       const newUserId = await convex.mutation(api.users.createUser, {
         clerkId: userId,
-        email: '', // Will be updated via webhook
-        firstName: '',
-        lastName: '',
-        imageUrl: '',
-        role: 'customer',
+        email: "", // Will be updated via webhook
+        firstName: "",
+        lastName: "",
+        imageUrl: "",
+        role: "customer",
       });
-      convexUser = await convex.query(api.users.getUserByClerkId, { clerkId: userId });
+      convexUser = await convex.query(api.users.getUserByClerkId, {
+        clerkId: userId,
+      });
     }
 
     if (!convexUser) {
-      throw new Error('Failed to create or retrieve user');
+      throw new Error("Failed to create or retrieve user");
     }
 
     // Create order
     const orderId = await convex.mutation(api.orders.createOrder, {
       userId: convexUser._id,
-      items: formData.items.map(item => ({
+      items: formData.items.map((item) => ({
         ...item,
         productId: item.productId as any,
       })),
@@ -85,7 +89,7 @@ export async function createOrder(formData: {
       discount: formData.discount,
       total: formData.total,
       currency: formData.currency,
-      exchangeRate: formData.currency !== 'usd' ? 1.0 : undefined, // Store exchange rate for non-USD currencies
+      exchangeRate: formData.currency !== "usd" ? 1.0 : undefined, // Store exchange rate for non-USD currencies
       deliveryMethodId: formData.deliveryMethodId as any,
       stripePaymentIntentId: undefined,
     });
@@ -95,23 +99,26 @@ export async function createOrder(formData: {
     try {
       order = await convex.query(api.orders.getOrderById, { orderId });
     } catch (error) {
-      console.warn('getOrderById function not available, skipping email:', error);
+      console.warn(
+        "getOrderById function not available, skipping email:",
+        error,
+      );
       order = null;
     }
-    
+
     if (order && convexUser.email) {
       // Get product details for email
       const productDetails = await Promise.all(
         formData.items.map(async (item) => {
-          const product = await convex.query(api.products.getProduct, { 
-            productId: item.productId as any 
+          const product = await convex.query(api.products.getProduct, {
+            productId: item.productId as any,
           });
           return {
-            name: product?.name || 'Unknown Product',
+            name: product?.name || "Unknown Product",
             quantity: item.quantity,
             price: item.price,
           };
-        })
+        }),
       );
 
       // Get delivery method details
@@ -142,29 +149,29 @@ export async function createOrder(formData: {
           deliveryMethod,
         });
       } catch (emailError) {
-        console.error('Failed to send order confirmation email:', emailError);
+        console.error("Failed to send order confirmation email:", emailError);
         // Don't fail the order creation if email fails
       }
     }
 
-    revalidatePath('/admin/orders');
+    revalidatePath("/admin/orders");
     return { success: true, orderId };
   } catch (error) {
-    console.error('Error creating order:', error);
-    return { success: false, error: 'Failed to create order' };
+    console.error("Error creating order:", error);
+    return { success: false, error: "Failed to create order" };
   }
 }
 
 export async function getOrderBySessionId(sessionId: string) {
   try {
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-    
+
     const order = await convex.query(api.orders.getOrderBySessionId, {
       sessionId,
     });
 
     if (!order) {
-      return { success: false, error: 'Order not found' };
+      return { success: false, error: "Order not found" };
     }
 
     // Get order items
@@ -172,15 +179,15 @@ export async function getOrderBySessionId(sessionId: string) {
       orderId: order._id,
     });
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       order: {
         ...order,
         items,
-      }
+      },
     };
   } catch (error) {
-    console.error('Error fetching order details:', error);
-    return { success: false, error: 'Failed to fetch order details' };
+    console.error("Error fetching order details:", error);
+    return { success: false, error: "Failed to fetch order details" };
   }
 }

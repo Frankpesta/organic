@@ -1,16 +1,16 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
   Preview,
   Section,
   Text,
-  Button,
-  Hr,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -43,34 +43,37 @@ export const WelcomeEmail = ({
           {/* Main Content */}
           <Section style={content}>
             <Heading style={h1}>Welcome to Helen's Beauty Secret! 🌿</Heading>
-            
+
+            <Text style={text}>Hi {customerName},</Text>
+
             <Text style={text}>
-              Hi {customerName},
-            </Text>
-            
-            <Text style={text}>
-              Welcome to our community of beauty enthusiasts who believe in the power of organic skincare! 
-              We're thrilled to have you join us on this journey to healthier, more radiant skin.
+              Welcome to our community of beauty enthusiasts who believe in the
+              power of organic skincare! We're thrilled to have you join us on
+              this journey to healthier, more radiant skin.
             </Text>
 
             {/* Benefits Section */}
             <Section style={benefitsSection}>
               <Heading style={h2}>What You'll Love About Us</Heading>
-              
+
               <Text style={benefitItem}>
-                🌱 <strong>100% Organic Ingredients</strong> - Pure, natural ingredients that your skin will love
+                🌱 <strong>100% Organic Ingredients</strong> - Pure, natural
+                ingredients that your skin will love
               </Text>
-              
+
               <Text style={benefitItem}>
-                🚚 <strong>Free Worldwide Shipping</strong> - On orders over $50, delivered right to your door
+                🚚 <strong>Free Worldwide Shipping</strong> - On orders over
+                $50, delivered right to your door
               </Text>
-              
+
               <Text style={benefitItem}>
-                💚 <strong>Cruelty-Free & Sustainable</strong> - Ethical beauty that cares for you and the planet
+                💚 <strong>Cruelty-Free & Sustainable</strong> - Ethical beauty
+                that cares for you and the planet
               </Text>
-              
+
               <Text style={benefitItem}>
-                ⭐ <strong>30-Day Satisfaction Guarantee</strong> - Love your products or get a full refund
+                ⭐ <strong>30-Day Satisfaction Guarantee</strong> - Love your
+                products or get a full refund
               </Text>
             </Section>
 
@@ -88,12 +91,10 @@ export const WelcomeEmail = ({
             <Section style={offerSection}>
               <Heading style={h2}>Special Welcome Offer</Heading>
               <Text style={offerText}>
-                As a new member, enjoy <strong>15% off your first order</strong>! 
-                Use code <strong>WELCOME15</strong> at checkout.
+                As a new member, enjoy <strong>15% off your first order</strong>
+                ! Use code <strong>WELCOME15</strong> at checkout.
               </Text>
-              <Text style={offerExpiry}>
-                *Valid for 30 days from signup
-              </Text>
+              <Text style={offerExpiry}>*Valid for 30 days from signup</Text>
             </Section>
 
             <Hr style={hr} />
@@ -102,29 +103,41 @@ export const WelcomeEmail = ({
             <Section style={gettingStartedSection}>
               <Heading style={h2}>Getting Started</Heading>
               <Text style={text}>
-                • <strong>Explore our products</strong> - Browse our curated collection of organic skincare
-                <br />
-                • <strong>Take our skin quiz</strong> - Get personalized product recommendations
-                <br />
-                • <strong>Follow us on social</strong> - Stay updated with beauty tips and new launches
-                <br />
-                • <strong>Join our community</strong> - Connect with other beauty enthusiasts
+                • <strong>Explore our products</strong> - Browse our curated
+                collection of organic skincare
+                <br />• <strong>Take our skin quiz</strong> - Get personalized
+                product recommendations
+                <br />• <strong>Follow us on social</strong> - Stay updated with
+                beauty tips and new launches
+                <br />• <strong>Join our community</strong> - Connect with other
+                beauty enthusiasts
               </Text>
             </Section>
 
             {/* Social Links */}
             <Section style={socialSection}>
-              <Text style={socialText}>Follow us for daily beauty inspiration:</Text>
+              <Text style={socialText}>
+                Follow us for daily beauty inspiration:
+              </Text>
               <Text style={socialLinks}>
-                <Link href="https://instagram.com/helensbeautysecret" style={socialLink}>
+                <Link
+                  href="https://instagram.com/helensbeautysecret"
+                  style={socialLink}
+                >
                   Instagram
                 </Link>
                 {" • "}
-                <Link href="https://facebook.com/helensbeautysecret" style={socialLink}>
+                <Link
+                  href="https://facebook.com/helensbeautysecret"
+                  style={socialLink}
+                >
                   Facebook
                 </Link>
                 {" • "}
-                <Link href="https://twitter.com/helensbeautysecret" style={socialLink}>
+                <Link
+                  href="https://twitter.com/helensbeautysecret"
+                  style={socialLink}
+                >
                   Twitter
                 </Link>
               </Text>
@@ -156,7 +169,8 @@ export const WelcomeEmail = ({
 // Styles
 const main = {
   backgroundColor: "#f6f9fc",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

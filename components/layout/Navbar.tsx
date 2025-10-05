@@ -1,23 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { 
-  ShoppingCart, 
-  Search, 
-  Menu, 
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import {
   Heart,
   Leaf,
+  Menu,
+  Search,
+  Settings,
+  ShoppingCart,
   User,
-  Settings
 } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCartStore } from "@/lib/stores/cartStore";
 import { useWishlistStore } from "@/lib/stores/wishlistStore";
-import { UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export function Navbar() {
   const { getTotalItems, toggleCart } = useCartStore();
@@ -31,8 +31,8 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Set mounted state to prevent hydration issues
@@ -41,9 +41,13 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm border-b' : 'bg-transparent'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-background/95 backdrop-blur-md shadow-sm border-b"
+          : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -58,19 +62,34 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-6">
-            <Link href="/shop" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            <Link
+              href="/shop"
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
               Shop
             </Link>
-            <Link href="/about" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
               About
             </Link>
-            <Link href="/ingredients" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            <Link
+              href="/ingredients"
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
               Ingredients
             </Link>
-            <Link href="/sustainability" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            <Link
+              href="/sustainability"
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
               Sustainability
             </Link>
-            <Link href="/blog" className="text-muted-foreground hover:text-foreground font-medium transition-colors">
+            <Link
+              href="/blog"
+              className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
               Blog
             </Link>
           </div>
@@ -110,9 +129,9 @@ export function Navbar() {
                 )}
               </Button>
             </Link>
-            
+
             <ThemeToggle />
-            
+
             {/* User Menu */}
             <div className="flex items-center space-x-2">
               <Link href="/dashboard">
@@ -120,12 +139,12 @@ export function Navbar() {
                   Dashboard
                 </Button>
               </Link>
-              <UserButton 
+              <UserButton
                 afterSignOutUrl="/"
                 appearance={{
                   elements: {
-                    avatarBox: "h-8 w-8"
-                  }
+                    avatarBox: "h-8 w-8",
+                  },
                 }}
               />
             </div>
@@ -133,31 +152,53 @@ export function Navbar() {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden h-9 w-9 p-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden h-9 w-9 p-0"
+                >
                   <Menu className="h-4 w-4" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-6 mt-6">
-                  <Link href="/shop" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/shop"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     Shop
                   </Link>
-                  <Link href="/about" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/about"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     About
                   </Link>
-                  <Link href="/ingredients" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/ingredients"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     Ingredients
                   </Link>
-                  <Link href="/sustainability" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/sustainability"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     Sustainability
                   </Link>
-                  <Link href="/blog" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/blog"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     Blog
                   </Link>
-                  <Link href="/dashboard" className="text-lg font-medium hover:text-green-600">
+                  <Link
+                    href="/dashboard"
+                    className="text-lg font-medium hover:text-green-600"
+                  >
                     Dashboard
                   </Link>
-                  
+
                   <div className="border-t pt-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Theme</span>
@@ -170,9 +211,7 @@ export function Navbar() {
                         </Button>
                       </SignInButton>
                       <SignUpButton mode="modal">
-                        <Button size="sm">
-                          Sign Up
-                        </Button>
+                        <Button size="sm">Sign Up</Button>
                       </SignUpButton>
                     </div>
                   </div>

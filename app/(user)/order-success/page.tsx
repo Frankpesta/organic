@@ -1,26 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  CheckCircle, 
-  Package, 
-  Truck, 
-  Mail, 
+import {
   ArrowRight,
+  Calendar,
+  CheckCircle,
+  CreditCard,
   Download,
   Heart,
+  Mail,
   MapPin,
-  CreditCard,
-  Calendar,
-  User
+  Package,
+  Truck,
+  User,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/convex/_generated/api";
 
 export default function OrderSuccessPage() {
   const router = useRouter();
@@ -28,20 +28,23 @@ export default function OrderSuccessPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
-    const session = searchParams.get('session_id');
+    const session = searchParams.get("session_id");
     setSessionId(session);
   }, [searchParams]);
 
   // Get order details using the session ID
-  const order = useQuery(api.orders.getOrderBySessionId, 
-    sessionId ? { sessionId } : "skip"
+  const order = useQuery(
+    api.orders.getOrderBySessionId,
+    sessionId ? { sessionId } : "skip",
   );
 
   if (!sessionId) {
     return (
       <div className="min-h-screen bg-background pt-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Invalid Order</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Invalid Order
+          </h1>
           <p className="text-muted-foreground mb-6">No session ID provided</p>
           <Link href="/shop">
             <Button>Continue Shopping</Button>
@@ -66,8 +69,12 @@ export default function OrderSuccessPage() {
     return (
       <div className="min-h-screen bg-background pt-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Order Not Found</h1>
-          <p className="text-muted-foreground mb-6">We couldn't find your order details</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Order Not Found
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            We couldn't find your order details
+          </p>
           <Link href="/dashboard">
             <Button>View My Orders</Button>
           </Link>
@@ -89,14 +96,17 @@ export default function OrderSuccessPage() {
           <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Order Confirmed!
           </h1>
-          
+
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Thank you for your purchase! Your order has been successfully placed and you'll receive a confirmation email shortly.
+            Thank you for your purchase! Your order has been successfully placed
+            and you'll receive a confirmation email shortly.
           </p>
-          
+
           {/* Order Summary */}
           <div className="bg-background rounded-lg border p-6 mb-8 text-left">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Order Summary</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-4">
+              Order Summary
+            </h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Order Number:</span>
@@ -137,7 +147,9 @@ export default function OrderSuccessPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Order Date:</span>
-                  <span className="font-medium">{new Date(order._creationTime).toLocaleDateString()}</span>
+                  <span className="font-medium">
+                    {new Date(order._creationTime).toLocaleDateString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Payment Method:</span>
@@ -159,18 +171,30 @@ export default function OrderSuccessPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <span className="text-muted-foreground block mb-1">Delivery Address:</span>
+                  <span className="text-muted-foreground block mb-1">
+                    Delivery Address:
+                  </span>
                   <span className="font-medium">
-                    {order.shippingAddress?.firstName} {order.shippingAddress?.lastName}<br />
-                    {order.shippingAddress?.address1}<br />
-                    {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.postalCode}<br />
+                    {order.shippingAddress?.firstName}{" "}
+                    {order.shippingAddress?.lastName}
+                    <br />
+                    {order.shippingAddress?.address1}
+                    <br />
+                    {order.shippingAddress?.city},{" "}
+                    {order.shippingAddress?.state}{" "}
+                    {order.shippingAddress?.postalCode}
+                    <br />
                     {order.shippingAddress?.country}
                   </span>
                 </div>
                 {order.deliveryMethod && (
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping Method:</span>
-                    <span className="font-medium">{order.deliveryMethod.name}</span>
+                    <span className="text-muted-foreground">
+                      Shipping Method:
+                    </span>
+                    <span className="font-medium">
+                      {order.deliveryMethod.name}
+                    </span>
                   </div>
                 )}
               </CardContent>
@@ -179,16 +203,21 @@ export default function OrderSuccessPage() {
 
           {/* Next Steps */}
           <div className="bg-background rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-6">What's Next?</h2>
-            
+            <h2 className="text-2xl font-bold text-foreground mb-6">
+              What's Next?
+            </h2>
+
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Mail className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Confirmation Email</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Confirmation Email
+                </h3>
                 <p className="text-muted-foreground text-sm">
-                  You'll receive an order confirmation email with all the details within the next few minutes.
+                  You'll receive an order confirmation email with all the
+                  details within the next few minutes.
                 </p>
               </div>
 
@@ -196,9 +225,12 @@ export default function OrderSuccessPage() {
                 <div className="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Package className="w-8 h-8 text-yellow-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Order Processing</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Order Processing
+                </h3>
                 <p className="text-muted-foreground text-sm">
-                  We'll prepare your order and send it out within 1-2 business days.
+                  We'll prepare your order and send it out within 1-2 business
+                  days.
                 </p>
               </div>
 
@@ -206,7 +238,9 @@ export default function OrderSuccessPage() {
                 <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Truck className="w-8 h-8 text-green-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Tracking Information</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  Tracking Information
+                </h3>
                 <p className="text-muted-foreground text-sm">
                   You'll get tracking information once your order ships.
                 </p>
@@ -222,9 +256,9 @@ export default function OrderSuccessPage() {
                 View My Dashboard
               </Button>
             </Link>
-            
+
             <Link href="/shop">
-              <Button 
+              <Button
                 variant="outline"
                 className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-4 text-lg font-semibold rounded-xl"
               >
@@ -243,8 +277,9 @@ export default function OrderSuccessPage() {
                   Thank you for choosing Helen's Beauty Secret!
                 </h3>
                 <p className="text-green-800">
-                  We're excited for you to experience the transformative power of our organic skincare products. 
-                  If you have any questions or need assistance, our customer service team is here to help.
+                  We're excited for you to experience the transformative power
+                  of our organic skincare products. If you have any questions or
+                  need assistance, our customer service team is here to help.
                 </p>
               </div>
             </div>
@@ -256,11 +291,17 @@ export default function OrderSuccessPage() {
               Need help? Contact our customer service team
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
-              <a href="mailto:support@helensbeautysecret.com" className="text-green-600 hover:text-green-700 font-medium">
+              <a
+                href="mailto:support@helensbeautysecret.com"
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
                 support@helensbeautysecret.com
               </a>
               <span className="hidden sm:block text-gray-400">•</span>
-              <a href="tel:+1-800-HELEN-BEAUTY" className="text-green-600 hover:text-green-700 font-medium">
+              <a
+                href="tel:+1-800-HELEN-BEAUTY"
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
                 +1 (800) HELEN-BEAUTY
               </a>
             </div>

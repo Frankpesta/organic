@@ -1,22 +1,22 @@
 "use client";
 
+import {
+  ArrowRight,
+  Award,
+  CheckCircle,
+  Globe,
+  Heart,
+  Leaf,
+  Recycle,
+  Shield,
+  Sparkles,
+  Star,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Leaf, 
-  Award, 
-  Users, 
-  Heart, 
-  Shield, 
-  Sparkles,
-  ArrowRight,
-  CheckCircle,
-  Star,
-  Globe,
-  Recycle
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AboutPage() {
   return (
@@ -25,22 +25,26 @@ export default function AboutPage() {
       <section className="relative py-20 lg:py-32 bg-gradient-to-br from-green-50 dark:from-green-950/20 via-background to-green-50 dark:to-green-950/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="secondary" className="w-fit bg-green-100 text-green-800 border-green-200 mb-6">
+            <Badge
+              variant="secondary"
+              className="w-fit bg-green-100 text-green-800 border-green-200 mb-6"
+            >
               <Sparkles className="w-4 h-4 mr-2" />
               Our Story
             </Badge>
-            
+
             <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6">
               Born from a
               <span className="block bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
                 Love for Nature
               </span>
             </h1>
-            
+
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Helen's Beauty Secret was founded on the belief that true beauty comes from nature. 
-              We create premium organic skincare products that deliver real results while respecting 
-              our planet and all its inhabitants.
+              Helen's Beauty Secret was founded on the belief that true beauty
+              comes from nature. We create premium organic skincare products
+              that deliver real results while respecting our planet and all its
+              inhabitants.
             </p>
           </div>
         </div>
@@ -55,14 +59,17 @@ export default function AboutPage() {
                 Our Mission
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                To revolutionize the beauty industry by creating clean, effective, and sustainable 
-                skincare products that empower people to look and feel their best while protecting 
-                our planet for future generations.
+                To revolutionize the beauty industry by creating clean,
+                effective, and sustainable skincare products that empower people
+                to look and feel their best while protecting our planet for
+                future generations.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">100% Organic Ingredients</span>
+                  <span className="text-gray-700">
+                    100% Organic Ingredients
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-600" />
@@ -74,11 +81,13 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">Scientifically Proven Results</span>
+                  <span className="text-gray-700">
+                    Scientifically Proven Results
+                  </span>
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="aspect-square bg-gradient-to-br from-green-100 to-green-200 rounded-3xl overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -112,9 +121,11 @@ export default function AboutPage() {
               <div className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Leaf className="w-10 h-10 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Purity</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Purity
+              </h3>
               <p className="text-muted-foreground">
-                We use only the purest, most potent organic ingredients, 
+                We use only the purest, most potent organic ingredients,
                 carefully sourced from trusted suppliers around the world.
               </p>
             </div>
@@ -123,9 +134,11 @@ export default function AboutPage() {
               <div className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Heart className="w-10 h-10 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Compassion</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Compassion
+              </h3>
               <p className="text-muted-foreground">
-                We believe in cruelty-free beauty and ethical practices that 
+                We believe in cruelty-free beauty and ethical practices that
                 respect all living beings and the environment.
               </p>
             </div>
@@ -134,10 +147,13 @@ export default function AboutPage() {
               <div className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Recycle className="w-10 h-10 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Sustainability</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Sustainability
+              </h3>
               <p className="text-muted-foreground">
-                We're committed to sustainable practices, from ingredient 
-                sourcing to packaging, to protect our planet for future generations.
+                We're committed to sustainable practices, from ingredient
+                sourcing to packaging, to protect our planet for future
+                generations.
               </p>
             </div>
           </div>
@@ -163,11 +179,13 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-green-800">H</span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">Helen Chen</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                Helen Chen
+              </h3>
               <p className="text-green-600 font-medium mb-2">Founder & CEO</p>
               <p className="text-muted-foreground text-sm">
-                A passionate advocate for clean beauty with over 15 years of experience 
-                in cosmetic chemistry and sustainable skincare.
+                A passionate advocate for clean beauty with over 15 years of
+                experience in cosmetic chemistry and sustainable skincare.
               </p>
             </div>
 
@@ -177,10 +195,14 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-green-800">S</span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">Dr. Sarah Kim</h3>
-              <p className="text-green-600 font-medium mb-2">Head of Research</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                Dr. Sarah Kim
+              </h3>
+              <p className="text-green-600 font-medium mb-2">
+                Head of Research
+              </p>
               <p className="text-muted-foreground text-sm">
-                A dermatologist and cosmetic scientist who ensures our products 
+                A dermatologist and cosmetic scientist who ensures our products
                 are both safe and effective through rigorous testing.
               </p>
             </div>
@@ -191,11 +213,15 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-green-800">M</span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">Maria Rodriguez</h3>
-              <p className="text-green-600 font-medium mb-2">Sustainability Director</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                Maria Rodriguez
+              </h3>
+              <p className="text-green-600 font-medium mb-2">
+                Sustainability Director
+              </p>
               <p className="text-muted-foreground text-sm">
-                Leads our sustainability initiatives and ensures our supply chain 
-                meets the highest ethical and environmental standards.
+                Leads our sustainability initiatives and ensures our supply
+                chain meets the highest ethical and environmental standards.
               </p>
             </div>
           </div>
@@ -242,15 +268,22 @@ export default function AboutPage() {
             Join Our Mission
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Be part of the clean beauty revolution. Discover products that are good 
-            for you and good for the planet.
+            Be part of the clean beauty revolution. Discover products that are
+            good for you and good for the planet.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl">
+            <Button
+              size="lg"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold rounded-xl"
+            >
               Shop Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-4 text-lg font-semibold rounded-xl">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-4 text-lg font-semibold rounded-xl"
+            >
               Learn More
             </Button>
           </div>

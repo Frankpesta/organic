@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface WishlistItem {
   productId: string;
@@ -22,37 +22,37 @@ export const useWishlistStore = create<WishlistStore>()(
   persist(
     (set, get) => ({
       items: [],
-      
+
       addItem: (item) => {
         const { items } = get();
-        const existingItem = items.find(i => i.productId === item.productId);
-        
+        const existingItem = items.find((i) => i.productId === item.productId);
+
         if (!existingItem) {
           set({ items: [...items, item] });
         }
       },
-      
+
       removeItem: (productId) => {
         const { items } = get();
-        set({ items: items.filter(item => item.productId !== productId) });
+        set({ items: items.filter((item) => item.productId !== productId) });
       },
-      
+
       isInWishlist: (productId) => {
         const { items } = get();
-        return items.some(item => item.productId === productId);
+        return items.some((item) => item.productId === productId);
       },
-      
+
       clearWishlist: () => {
         set({ items: [] });
       },
-      
+
       getWishlistCount: () => {
         const { items } = get();
         return items.length;
       },
     }),
     {
-      name: 'wishlist-storage',
-    }
-  )
+      name: "wishlist-storage",
+    },
+  ),
 );

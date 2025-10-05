@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Bell, Search, Menu } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import { Bell, Menu, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -54,23 +54,26 @@ export function Header({ onMenuClick }: HeaderProps) {
           </button>
 
           {/* Separator */}
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-border" aria-hidden="true" />
+          <div
+            className="hidden lg:block lg:h-6 lg:w-px lg:bg-border"
+            aria-hidden="true"
+          />
 
-            {/* Action buttons */}
-            <div className="flex items-center gap-x-4">
-              {/* Theme Toggle */}
-              <ThemeToggle />
+          {/* Action buttons */}
+          <div className="flex items-center gap-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
-              {/* User Profile with Clerk */}
-              <UserButton 
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "h-8 w-8"
-                  }
-                }}
-              />
-            </div>
+            {/* User Profile with Clerk */}
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "h-8 w-8",
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

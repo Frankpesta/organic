@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { getCountryByCode } from "@/lib/ppp";
 
 interface PPPContextType {
@@ -22,21 +28,21 @@ export function PPPProvider({ children }: { children: ReactNode }) {
     // Auto-detect country on mount
     const detectCountry = async () => {
       try {
-        const response = await fetch('/api/detect-country');
+        const response = await fetch("/api/detect-country");
         if (response.ok) {
           const data = await response.json();
           if (data.countryCode) {
             setSelectedCountry(data.countryCode);
             // Auto-enable PPP for detected countries (except US)
-            if (data.countryCode !== 'US') {
+            if (data.countryCode !== "US") {
               setPPPenabled(true);
             }
           }
         }
       } catch (error) {
-        console.error('Failed to detect country:', error);
+        console.error("Failed to detect country:", error);
         // Fallback to US if detection fails
-        setSelectedCountry('US');
+        setSelectedCountry("US");
       } finally {
         setIsLoading(false);
       }
@@ -46,13 +52,15 @@ export function PPPProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PPPContext.Provider value={{ 
-      selectedCountry, 
-      isLoading, 
-      isPPPenabled, 
-      setSelectedCountry, 
-      setPPPenabled 
-    }}>
+    <PPPContext.Provider
+      value={{
+        selectedCountry,
+        isLoading,
+        isPPPenabled,
+        setSelectedCountry,
+        setPPPenabled,
+      }}
+    >
       {children}
     </PPPContext.Provider>
   );
@@ -61,7 +69,7 @@ export function PPPProvider({ children }: { children: ReactNode }) {
 export function usePPP() {
   const context = useContext(PPPContext);
   if (context === undefined) {
-    throw new Error('usePPP must be used within a PPPProvider');
+    throw new Error("usePPP must be used within a PPPProvider");
   }
   return context;
 }

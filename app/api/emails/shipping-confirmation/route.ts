@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { sendShippingConfirmationEmail } from '@/lib/services/emailService';
+import { type NextRequest, NextResponse } from "next/server";
+import { sendShippingConfirmationEmail } from "@/lib/services/emailService";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     const {
       to,
       orderNumber,
@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!to || !orderNumber || !customerName || !trackingNumber) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: "Missing required fields" },
+        { status: 400 },
       );
     }
 
@@ -37,23 +37,24 @@ export async function POST(request: NextRequest) {
 
     if (!result.success) {
       return NextResponse.json(
-        { error: 'Failed to send shipping confirmation email', details: result.error },
-        { status: 500 }
+        {
+          error: "Failed to send shipping confirmation email",
+          details: result.error,
+        },
+        { status: 500 },
       );
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Shipping confirmation email sent successfully',
-      data: result.data 
+    return NextResponse.json({
+      success: true,
+      message: "Shipping confirmation email sent successfully",
+      data: result.data,
     });
-
   } catch (error) {
-    console.error('Shipping confirmation email API error:', error);
+    console.error("Shipping confirmation email API error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
-

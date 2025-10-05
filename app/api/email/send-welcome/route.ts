@@ -1,5 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { sendWelcomeEmail, WelcomeEmailData } from "@/lib/services/emailService";
+import { type NextRequest, NextResponse } from "next/server";
+import {
+  sendWelcomeEmail,
+  type WelcomeEmailData,
+} from "@/lib/services/emailService";
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,19 +12,19 @@ export async function POST(request: NextRequest) {
     if (!data.customerEmail || !data.customerName) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const result = await sendWelcomeEmail({
       to: data.customerEmail,
-      firstName: data.customerName
+      firstName: data.customerName,
     });
 
     if (!result.success) {
       return NextResponse.json(
         { error: "Failed to send email", details: result.error },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest) {
     console.error("Error in send-welcome API:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

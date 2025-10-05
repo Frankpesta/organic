@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import Link from "next/link";
+import {
+  Filter,
+  Grid,
+  Heart,
+  List,
+  Search,
+  ShoppingCart,
+  Star,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Search, 
-  Filter, 
-  Grid,
-  List,
-  Star,
-  ShoppingCart,
-  Heart
-} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,18 +22,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useProductStore } from "@/lib/stores/productStore";
-import { useCartStore } from "@/lib/stores/cartStore";
 import { WishlistButton } from "@/components/WishlistButton";
+import { api } from "@/convex/_generated/api";
+import { useCartStore } from "@/lib/stores/cartStore";
+import { useProductStore } from "@/lib/stores/productStore";
 
 export default function ShopPage() {
-  const { 
-    products, 
-    categories, 
-    loading, 
-    searchTerm, 
-    selectedCategory, 
-    sortBy, 
+  const {
+    products,
+    categories,
+    loading,
+    searchTerm,
+    selectedCategory,
+    sortBy,
     viewMode,
     setProducts,
     setCategories,
@@ -43,14 +43,17 @@ export default function ShopPage() {
     setSelectedCategory,
     setSortBy,
     setViewMode,
-    getFilteredProducts
+    getFilteredProducts,
   } = useProductStore();
 
   const { getTotalItems, toggleCart } = useCartStore();
 
   const productsQuery = useQuery(api.products.getProducts, {
     search: searchTerm || undefined,
-    categoryId: selectedCategory && selectedCategory !== 'all' ? selectedCategory as any : undefined,
+    categoryId:
+      selectedCategory && selectedCategory !== "all"
+        ? (selectedCategory as any)
+        : undefined,
   });
 
   const categoriesQuery = useQuery(api.products.getCategories);
@@ -79,12 +82,13 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-background pt-16">
-
       {/* Page Header */}
       <div className="bg-muted/50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">Shop</h1>
-          <p className="text-lg text-muted-foreground">Discover our collection of organic skincare products</p>
+          <p className="text-lg text-muted-foreground">
+            Discover our collection of organic skincare products
+          </p>
         </div>
       </div>
 
@@ -102,18 +106,21 @@ export default function ShopPage() {
                   className="pl-10"
                 />
               </div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger className="w-full sm:w-48">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full sm:w-48">
@@ -155,7 +162,8 @@ export default function ShopPage() {
             {filteredProducts.map((product) => (
               <div key={product._id} className="group">
                 <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4 relative">
-                  {(product as any).imageUrls && (product as any).imageUrls.length > 0 ? (
+                  {(product as any).imageUrls &&
+                  (product as any).imageUrls.length > 0 ? (
                     <Image
                       src={(product as any).imageUrls[0]}
                       alt={product.name}
@@ -173,7 +181,7 @@ export default function ShopPage() {
                       productId={product._id}
                       name={product.name}
                       price={product.price}
-                      image={(product as any).imageUrls?.[0] || ''}
+                      image={(product as any).imageUrls?.[0] || ""}
                       slug={product.slug}
                       size="sm"
                       variant="outline"
@@ -182,36 +190,43 @@ export default function ShopPage() {
                   </div>
                   {!product.inStock && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <span className="text-white font-semibold">Out of Stock</span>
+                      <span className="text-white font-semibold">
+                        Out of Stock
+                      </span>
                     </div>
                   )}
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-green-600 transition-colors">
-                    <Link href={`/shop/${product.slug}`}>
-                      {product.name}
-                    </Link>
+                    <Link href={`/shop/${product.slug}`}>{product.name}</Link>
                   </h3>
-                  <p className="text-muted-foreground text-sm line-clamp-2">{product.shortDescription}</p>
+                  <p className="text-muted-foreground text-sm line-clamp-2">
+                    {product.shortDescription}
+                  </p>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                        <Star
+                          key={i}
+                          className="h-4 w-4 text-yellow-400 fill-current"
+                        />
                       ))}
                     </div>
                     <span className="text-sm text-muted-foreground">(4.8)</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xl font-bold text-foreground">${product.price}</span>
+                      <span className="text-xl font-bold text-foreground">
+                        ${product.price}
+                      </span>
                       {product.comparePrice && (
                         <span className="text-sm text-muted-foreground line-through">
                           ${product.comparePrice}
                         </span>
                       )}
                     </div>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       className="bg-green-500 hover:bg-green-600 text-white"
                       disabled={!product.inStock}
                       onClick={() => {
@@ -219,7 +234,7 @@ export default function ShopPage() {
                           productId: product._id,
                           name: product.name,
                           price: product.price,
-                          image: (product as any).imageUrls?.[0] || '',
+                          image: (product as any).imageUrls?.[0] || "",
                           quantity: 1,
                         });
                       }}
@@ -235,9 +250,13 @@ export default function ShopPage() {
         ) : (
           <div className="space-y-6">
             {filteredProducts.map((product) => (
-              <div key={product._id} className="flex items-center space-x-6 p-6 border border-border rounded-lg hover:shadow-md transition-shadow">
+              <div
+                key={product._id}
+                className="flex items-center space-x-6 p-6 border border-border rounded-lg hover:shadow-md transition-shadow"
+              >
                 <div className="w-24 h-24 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                  {(product as any).imageUrls && (product as any).imageUrls.length > 0 ? (
+                  {(product as any).imageUrls &&
+                  (product as any).imageUrls.length > 0 ? (
                     <Image
                       src={(product as any).imageUrls[0]}
                       alt={product.name}
@@ -253,32 +272,44 @@ export default function ShopPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-semibold text-foreground mb-1">
-                    <Link href={`/shop/${product.slug}`} className="hover:text-green-600">
+                    <Link
+                      href={`/shop/${product.slug}`}
+                      className="hover:text-green-600"
+                    >
                       {product.name}
                     </Link>
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{product.shortDescription}</p>
+                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">
+                    {product.shortDescription}
+                  </p>
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                        <Star
+                          key={i}
+                          className="h-4 w-4 text-yellow-400 fill-current"
+                        />
                       ))}
                     </div>
                     <span className="text-sm text-muted-foreground">(4.8)</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xl font-bold text-foreground">${product.price}</span>
+                    <span className="text-xl font-bold text-foreground">
+                      ${product.price}
+                    </span>
                     {product.comparePrice && (
                       <span className="text-sm text-muted-foreground line-through">
                         ${product.comparePrice}
                       </span>
                     )}
-                    <span className={`text-sm px-2 py-1 rounded-full ${
-                      product.inStock 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    <span
+                      className={`text-sm px-2 py-1 rounded-full ${
+                        product.inStock
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {product.inStock ? "In Stock" : "Out of Stock"}
                     </span>
                   </div>
                 </div>
@@ -286,8 +317,8 @@ export default function ShopPage() {
                   <Button size="sm" variant="outline" className="rounded-full">
                     <Heart className="h-4 w-4" />
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     className="bg-green-500 hover:bg-green-600 text-white"
                     disabled={!product.inStock}
                     onClick={() => {
@@ -295,7 +326,7 @@ export default function ShopPage() {
                         productId: product._id,
                         name: product.name,
                         price: product.price,
-                        image: (product as any).imageUrls?.[0] || '',
+                        image: (product as any).imageUrls?.[0] || "",
                         quantity: 1,
                       });
                     }}
@@ -314,11 +345,13 @@ export default function ShopPage() {
             <div className="text-muted-foreground mb-4">
               <Search className="h-12 w-12 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No products found</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              No products found
+            </h3>
             <p className="text-muted-foreground mb-4">
               Try adjusting your search or filter criteria.
             </p>
-            <Button 
+            <Button
               onClick={() => {
                 setSearchTerm("");
                 setSelectedCategory("");
@@ -330,7 +363,6 @@ export default function ShopPage() {
           </div>
         )}
       </div>
-
     </div>
   );
 }

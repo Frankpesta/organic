@@ -46,11 +46,13 @@ export default defineSchema({
     inStock: v.boolean(),
     inventory: v.number(),
     weight: v.optional(v.number()), // For shipping calculations
-    dimensions: v.optional(v.object({
-      length: v.number(),
-      width: v.number(),
-      height: v.number(),
-    })),
+    dimensions: v.optional(
+      v.object({
+        length: v.number(),
+        width: v.number(),
+        height: v.number(),
+      }),
+    ),
     ingredients: v.array(v.string()),
     skinTypes: v.array(v.string()), // e.g., ["oily", "dry", "sensitive"]
     benefits: v.array(v.string()),
@@ -98,63 +100,63 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_product", ["userId", "productId"]),
 
-   // Orders
-   orders: defineTable({
-     orderNumber: v.string(),
-     userId: v.id("users"),
-     status: v.union(
-       v.literal("pending"),
-       v.literal("processing"),
-       v.literal("shipped"),
-       v.literal("delivered"),
-       v.literal("cancelled"),
-       v.literal("refunded")
-     ),
-     paymentStatus: v.union(
-       v.literal("pending"),
-       v.literal("paid"),
-       v.literal("failed"),
-       v.literal("refunded")
-     ),
-     subtotal: v.number(),
-     tax: v.number(),
-     shipping: v.number(),
-     discount: v.number(),
-     total: v.number(),
-     currency: v.string(),
-     exchangeRate: v.optional(v.number()), // For PPP
-     deliveryMethodId: v.optional(v.id("shippingMethods")),
-     shippingAddress: v.object({
-       firstName: v.string(),
-       lastName: v.string(),
-       company: v.optional(v.string()),
-       address1: v.string(),
-       address2: v.optional(v.string()),
-       city: v.string(),
-       state: v.string(),
-       postalCode: v.string(),
-       country: v.string(),
-       phone: v.optional(v.string()),
-     }),
-     billingAddress: v.object({
-       firstName: v.string(),
-       lastName: v.string(),
-       company: v.optional(v.string()),
-       address1: v.string(),
-       address2: v.optional(v.string()),
-       city: v.string(),
-       state: v.string(),
-       postalCode: v.string(),
-       country: v.string(),
-       phone: v.optional(v.string()),
-     }),
-     stripePaymentIntentId: v.optional(v.string()),
-     stripeSessionId: v.optional(v.string()),
-     trackingNumber: v.optional(v.string()),
-     notes: v.optional(v.string()),
-     createdAt: v.number(),
-     updatedAt: v.number(),
-   })
+  // Orders
+  orders: defineTable({
+    orderNumber: v.string(),
+    userId: v.id("users"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("processing"),
+      v.literal("shipped"),
+      v.literal("delivered"),
+      v.literal("cancelled"),
+      v.literal("refunded"),
+    ),
+    paymentStatus: v.union(
+      v.literal("pending"),
+      v.literal("paid"),
+      v.literal("failed"),
+      v.literal("refunded"),
+    ),
+    subtotal: v.number(),
+    tax: v.number(),
+    shipping: v.number(),
+    discount: v.number(),
+    total: v.number(),
+    currency: v.string(),
+    exchangeRate: v.optional(v.number()), // For PPP
+    deliveryMethodId: v.optional(v.id("shippingMethods")),
+    shippingAddress: v.object({
+      firstName: v.string(),
+      lastName: v.string(),
+      company: v.optional(v.string()),
+      address1: v.string(),
+      address2: v.optional(v.string()),
+      city: v.string(),
+      state: v.string(),
+      postalCode: v.string(),
+      country: v.string(),
+      phone: v.optional(v.string()),
+    }),
+    billingAddress: v.object({
+      firstName: v.string(),
+      lastName: v.string(),
+      company: v.optional(v.string()),
+      address1: v.string(),
+      address2: v.optional(v.string()),
+      city: v.string(),
+      state: v.string(),
+      postalCode: v.string(),
+      country: v.string(),
+      phone: v.optional(v.string()),
+    }),
+    stripePaymentIntentId: v.optional(v.string()),
+    stripeSessionId: v.optional(v.string()),
+    trackingNumber: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
     .index("by_user", ["userId"])
     .index("by_order_number", ["orderNumber"])
     .index("by_status", ["status"])
@@ -171,8 +173,7 @@ export default defineSchema({
     price: v.number(),
     quantity: v.number(),
     total: v.number(),
-  })
-    .index("by_order", ["orderId"]),
+  }).index("by_order", ["orderId"]),
 
   // Product reviews
   reviews: defineTable({
@@ -241,8 +242,7 @@ export default defineSchema({
     key: v.string(),
     value: v.any(),
     updatedAt: v.number(),
-  })
-    .index("by_key", ["key"]),
+  }).index("by_key", ["key"]),
 
   // Shipping methods
   shippingMethods: defineTable({
@@ -266,12 +266,14 @@ export default defineSchema({
     date: v.string(), // YYYY-MM-DD format
     metric: v.string(), // e.g., "page_views", "orders", "revenue"
     value: v.number(),
-    metadata: v.optional(v.object({
-      page: v.optional(v.string()),
-      productId: v.optional(v.id("products")),
-      categoryId: v.optional(v.id("categories")),
-      country: v.optional(v.string()),
-    })),
+    metadata: v.optional(
+      v.object({
+        page: v.optional(v.string()),
+        productId: v.optional(v.id("products")),
+        categoryId: v.optional(v.id("categories")),
+        country: v.optional(v.string()),
+      }),
+    ),
   })
     .index("by_date", ["date"])
     .index("by_metric", ["metric"])
