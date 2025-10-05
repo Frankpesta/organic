@@ -8,7 +8,7 @@ export const getCategories = query({
     return await ctx.db
       .query("categories")
       .filter((q) => q.eq(q.field("isActive"), true))
-      .order("asc", (q) => q.field("sortOrder"))
+      .order("asc")
       .collect();
   },
 });
