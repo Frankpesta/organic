@@ -39,7 +39,7 @@ export async function detectCountryFromIP(): Promise<IPLocationData | null> {
       region: data.region,
     };
   } catch (error) {
-    if (error.name === "AbortError") {
+    if (error instanceof Error && error.name === "AbortError") {
       console.error("IP detection timeout");
     } else {
       console.error("Error detecting country from IP:", error);
@@ -84,7 +84,7 @@ export async function detectCountryFromIPAlternative(): Promise<IPLocationData |
       region: data.regionName,
     };
   } catch (error) {
-    if (error.name === "AbortError") {
+    if (error instanceof Error && error.name === "AbortError") {
       console.error("IP detection timeout (alternative)");
     } else {
       console.error("Error detecting country from IP (alternative):", error);
