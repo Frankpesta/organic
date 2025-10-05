@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { generateMetadata, generateStructuredData } from "@/lib/seo";
 import { calculatePPP, formatPrice } from "@/lib/ppp";
-import { PPToggle } from "@/components/PPPToggle";
+import { PPTToggle } from "@/components/PPPToggle";
 import { usePPP, PPPProvider } from "@/lib/contexts/PPPContext";
 import { 
   Star, 
@@ -157,7 +157,7 @@ function ProductDetailContent() {
               </div>
               <div className="space-y-4">
                 {/* PPP Toggle */}
-                <PPPToggle
+                <PPTToggle
                   isEnabled={isPPPenabled}
                   onToggle={() => {}} // This will be handled by the context
                   detectedCountry={selectedCountry}
