@@ -116,12 +116,20 @@ export default function CategoriesPage() {
     _id: string;
     name: string;
     slug: string;
-    description: string;
-    image: string;
+    description?: string;
+    image?: string;
     isActive: boolean;
     sortOrder: number;
   }) => {
-    setEditingCategory(category);
+    setEditingCategory({
+      _id: category._id,
+      name: category.name,
+      slug: category.slug,
+      description: category.description || "",
+      image: category.image || "",
+      isActive: category.isActive,
+      sortOrder: category.sortOrder,
+    });
     setFormData({
       name: category.name,
       slug: category.slug,
