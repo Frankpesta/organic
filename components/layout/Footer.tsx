@@ -1,4 +1,4 @@
-import { Heart, Leaf } from "lucide-react";
+import { Facebook, Heart, Instagram, Leaf, Twitter, Youtube } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
@@ -16,43 +16,43 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap items-center justify-center space-x-6 text-sm text-muted-foreground">
+          {/* Social Links */}
+          <div className="flex items-center justify-center space-x-4">
             <Link
-              href="/about"
-              className="hover:text-foreground transition-colors"
+              href="https://instagram.com/helensbeautysecret"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-pink-500 transition-colors"
+              aria-label="Follow us on Instagram"
             >
-              About
+              <Instagram className="w-5 h-5" />
             </Link>
             <Link
-              href="/shop"
-              className="hover:text-foreground transition-colors"
+              href="https://facebook.com/helensbeautysecret"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-blue-600 transition-colors"
+              aria-label="Follow us on Facebook"
             >
-              Shop
+              <Facebook className="w-5 h-5" />
             </Link>
             <Link
-              href="/contact"
-              className="hover:text-foreground transition-colors"
+              href="https://twitter.com/helensbeautysecret"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-blue-400 transition-colors"
+              aria-label="Follow us on Twitter"
             >
-              Contact
+              <Twitter className="w-5 h-5" />
             </Link>
             <Link
-              href="/faq"
-              className="hover:text-foreground transition-colors"
+              href="https://youtube.com/@helensbeautysecret"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-red-600 transition-colors"
+              aria-label="Subscribe to our YouTube channel"
             >
-              FAQ
-            </Link>
-            <Link
-              href="/privacy"
-              className="hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms"
-              className="hover:text-foreground transition-colors"
-            >
-              Terms
+              <Youtube className="w-5 h-5" />
             </Link>
           </div>
 
