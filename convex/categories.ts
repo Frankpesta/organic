@@ -20,7 +20,7 @@ export const getAllCategories = query({
 
     return await ctx.db
       .query("categories")
-      .order("asc", (q) => q.field("sortOrder"))
+      .order("asc")
       .collect();
   },
 });
