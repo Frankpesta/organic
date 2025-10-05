@@ -13,7 +13,6 @@ export {
   CartesianGrid,
   Cell,
   ComposedChart,
-  CurveType,
   Funnel,
   FunnelChart,
   Legend,
