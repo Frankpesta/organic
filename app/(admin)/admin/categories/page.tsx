@@ -75,7 +75,7 @@ export default function CategoriesPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Auto-generate slug from name
-    if (field === "name") {
+    if (field === "name" && typeof value === "string") {
       const slug = value
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
