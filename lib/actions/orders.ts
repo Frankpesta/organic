@@ -38,6 +38,7 @@ export async function createOrder(formData: {
   discount: number;
   total: number;
   currency: string;
+  exchangeRate?: number; // Add exchangeRate to formData type
   notes?: string;
   deliveryMethodId?: string;
 }) {
@@ -89,7 +90,7 @@ export async function createOrder(formData: {
       discount: formData.discount,
       total: formData.total,
       currency: formData.currency,
-      exchangeRate: formData.currency !== "usd" ? 1.0 : undefined, // Store exchange rate for non-USD currencies
+      exchangeRate: formData.exchangeRate, // Use the actual exchange rate from PPP calculation
       deliveryMethodId: formData.deliveryMethodId as any,
       stripePaymentIntentId: undefined,
     });

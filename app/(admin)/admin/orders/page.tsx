@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import {
   AlertCircle,
   CheckCircle,
@@ -65,8 +65,8 @@ export default function OrdersPage() {
   // This would typically come from a more specific orders query
   const dashboardStats = useQuery(api.admin.getDashboardStats);
 
-  // Mock update order status mutation (you'd need to implement this in Convex)
-  // const updateOrderStatus = useMutation(api.orders.updateOrderStatus);
+  // Update order status mutation
+  const updateOrderStatus = useMutation(api.orders.updateOrderStatus);
 
   const handleViewOrder = (order: any) => {
     setSelectedOrder(order);
@@ -83,13 +83,11 @@ export default function OrdersPage() {
     try {
       if (!selectedOrder || !newStatus) return;
 
-      // Simulate API call - you'd implement this mutation in Convex
-      // await updateOrderStatus({
-      //   orderId: selectedOrder._id,
-      //   status: newStatus
-      // });
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Update order status using Convex mutation
+      await updateOrderStatus({
+        orderId: selectedOrder._id,
+        status: newStatus as any, // Type assertion for Convex Id type
+      });
 
       setIsStatusUpdateOpen(false);
       setSelectedOrder(null);
