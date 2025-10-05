@@ -35,7 +35,7 @@ export async function createCheckoutSessionAction(data: {
 
     // Update order with session ID
     await convex.mutation(api.orders.updateOrderWithSessionId, {
-      orderId: data.orderId,
+      orderId: data.orderId as any,
       sessionId: session.id,
     });
 
