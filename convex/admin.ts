@@ -67,8 +67,8 @@ export const getDashboardStats = query({
           ...item,
           product: product
             ? {
-                name: product.name,
-                images: product.images,
+                name: product.name || "Unknown Product",
+                images: product.images || [],
               }
             : null,
         };
