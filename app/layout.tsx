@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Cart } from '@/components/Cart'
 import { UserSync } from '@/components/UserSync'
 import { Toaster } from 'sonner'
+import { PPPProvider } from '@/lib/contexts/PPPContext'
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -49,16 +50,18 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <div className="min-h-screen flex flex-col">
-               
-                <main className="flex-1">
-                  {children}
-                </main>
-              
-              </div>
-              <Cart />
-              <UserSync />
-              <Toaster position="top-right" richColors />
+              <PPPProvider>
+                <div className="min-h-screen flex flex-col">
+                 
+                  <main className="flex-1">
+                    {children}
+                  </main>
+                
+                </div>
+                <Cart />
+                <UserSync />
+                <Toaster position="top-right" richColors />
+              </PPPProvider>
             </ThemeProvider>
           </ConvexClientProvider>
         </ClerkProvider>

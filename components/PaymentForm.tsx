@@ -5,8 +5,9 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CountrySelector } from '@/components/CountrySelector';
 import { calculatePPP, formatPrice } from '@/lib/ppp';
+import { PPTToggle } from '@/components/PPPToggle';
+import { usePPP } from '@/lib/contexts/PPPContext';
 import { CreditCard, Lock } from 'lucide-react';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -31,14 +32,10 @@ function PaymentFormInner({
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState('US');
-  const [pppResult, setPppResult] = useState(calculatePPP(amount, selectedCountry, currency));
-
-  const handleCountryChange = (countryCode: string) => {
-    setSelectedCountry(countryCode);
-    const result = calculatePPP(amount, countryCode, currency);
-    setPppResult(result);
-  };
+  const { selectedCountry, isPPPenabled } = usePPP();
+  const pppResult = isPPPenabled && selectedCountry 
+    ? calculatePPP(amount, selectedCountry, currency) 
+    : { adjustedPrice: amount, currency: 'USD', originalPrice: amount };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -100,18 +97,13 @@ function PaymentFormInner({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Country Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Country
-            </label>
-            <CountrySelector
-              onCountryChange={handleCountryChange}
-              selectedCountry={selectedCountry}
-              showPrice={true}
-              samplePrice={amount}
-            />
-          </div>
+          {/* PPP Toggle */}
+          <PPTToggle
+            isEnabled={isPPPenabled}
+            onToggle={() => {}} // This will be handled by the context
+            detectedCountry={selectedCountry}
+            samplePrice={amount}
+          />
 
           {/* Price Display */}
           <div className="bg-gray-50 p-4 rounded-lg">

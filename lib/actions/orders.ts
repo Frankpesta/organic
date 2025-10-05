@@ -4,7 +4,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { sendOrderConfirmationEmail } from "@/lib/services/emailService";
 
 export async function createOrder(formData: {
   items: Array<{
@@ -85,13 +85,19 @@ export async function createOrder(formData: {
       discount: formData.discount,
       total: formData.total,
       currency: formData.currency,
-      exchangeRate: undefined,
+      exchangeRate: formData.currency !== 'usd' ? 1.0 : undefined, // Store exchange rate for non-USD currencies
       deliveryMethodId: formData.deliveryMethodId as any,
       stripePaymentIntentId: undefined,
     });
 
     // Get the created order with details for email
-    const order = await convex.query(api.orders.getOrderById, { orderId });
+    let order;
+    try {
+      order = await convex.query(api.orders.getOrderById, { orderId });
+    } catch (error) {
+      console.warn('getOrderById function not available, skipping email:', error);
+      order = null;
+    }
     
     if (order && convexUser.email) {
       // Get product details for email

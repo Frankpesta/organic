@@ -9,6 +9,8 @@ import Link from "next/link";
 import { calculatePPP, formatPrice } from "@/lib/ppp";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { usePPP } from "@/lib/contexts/PPPContext";
+import { PPTToggle } from "@/components/PPPToggle";
 
 export function Cart() {
   const { 
@@ -21,11 +23,13 @@ export function Cart() {
     clearCart 
   } = useCartStore();
 
-  const [selectedCountry, setSelectedCountry] = useState('US');
+  const { selectedCountry, isPPPenabled, setPPPenabled, isLoading } = usePPP();
   const [isMounted, setIsMounted] = useState(false);
   
   const subtotal = getTotalPrice();
-  const pppResult = calculatePPP(subtotal, selectedCountry);
+  const pppResult = isPPPenabled && selectedCountry 
+    ? calculatePPP(subtotal, selectedCountry) 
+    : { adjustedPrice: subtotal, currency: 'USD', originalPrice: subtotal };
 
   useEffect(() => {
     setIsMounted(true);
@@ -137,48 +141,25 @@ export function Cart() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="border-t border-gray-200 py-4 space-y-4">
-            {/* Country Selection */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Country for pricing:
-              </label>
-              <select
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-                className="w-full text-sm border border-gray-300 rounded px-2 py-1"
-              >
-                <option value="US">United States (USD)</option>
-                <option value="GB">United Kingdom (GBP)</option>
-                <option value="CA">Canada (CAD)</option>
-                <option value="AU">Australia (AUD)</option>
-                <option value="DE">Germany (EUR)</option>
-                <option value="FR">France (EUR)</option>
-                <option value="IT">Italy (EUR)</option>
-                <option value="ES">Spain (EUR)</option>
-                <option value="NL">Netherlands (EUR)</option>
-                <option value="BE">Belgium (EUR)</option>
-                <option value="NG">Nigeria (NGN)</option>
-              </select>
-            </div>
+            {/* PPP Toggle */}
+            <PPTToggle
+              isEnabled={isPPPenabled}
+              onToggle={setPPPenabled}
+              detectedCountry={selectedCountry}
+              samplePrice={subtotal}
+            />
 
             <div className="flex items-center justify-between text-lg font-semibold">
               <span>Total:</span>
               <span>{formatPrice(pppResult.adjustedPrice, pppResult.currency)}</span>
             </div>
-
-            {pppResult.adjustedPrice !== pppResult.originalPrice && (
-              <div className="text-xs text-gray-600 bg-green-50 p-2 rounded">
-                <strong>Local Pricing:</strong> Adjusted for your region
-              </div>
-            )}
             
             <div className="space-y-2">
                       <Button 
                         asChild
                         className="w-full bg-green-500 hover:bg-green-600 text-white"
-                        onClick={toggleCart}
                       >
-                        <Link href="/checkout">
+                        <Link href="/checkout" onClick={toggleCart}>
                           <CreditCard className="h-4 w-4 mr-2" />
                           Checkout
                         </Link>

@@ -66,8 +66,25 @@ export const ChartTooltip = React.forwardRef<
     active?: boolean
     payload?: any[]
     label?: string
+    accessibilityLayer?: boolean
+    allowEscapeViewBox?: boolean
+    viewBox?: any
+    coordinate?: any
+    offset?: any
   }
->(({ className, active, payload, label, ...props }, ref) => {
+>(({ 
+  className, 
+  active, 
+  payload, 
+  label, 
+  accessibilityLayer, 
+  allowEscapeViewBox,
+  // Filter out other Recharts internal props
+  viewBox,
+  coordinate,
+  offset,
+  ...props 
+}, ref) => {
   if (!active || !payload?.length) return null
 
   return (

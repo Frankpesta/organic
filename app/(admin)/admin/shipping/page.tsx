@@ -49,6 +49,27 @@ export default function AdminShippingPage() {
     sortOrder: 0,
   });
 
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      description: "",
+      countryCode: "ALL",
+      price: 0,
+      freeShippingThreshold: 0,
+      estimatedDays: "",
+      isActive: true,
+      sortOrder: 0,
+    });
+    setEditingMethod(null);
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsCreateOpen(open);
+    if (open) {
+      resetForm();
+    }
+  };
+
   const shippingMethods = useQuery(api.shipping.getShippingMethods);
   const createMethod = useMutation(api.shipping.createShippingMethod);
   const updateMethod = useMutation(api.shipping.updateShippingMethod);
@@ -103,19 +124,6 @@ export default function AdminShippingPage() {
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      description: "",
-      countryCode: "ALL",
-      price: 0,
-      freeShippingThreshold: 0,
-      estimatedDays: "",
-      isActive: true,
-      sortOrder: 0,
-    });
-  };
-
   const countries = [
     { code: "ALL", name: "International (All Countries)" },
     { code: "US", name: "United States" },
@@ -148,12 +156,9 @@ export default function AdminShippingPage() {
             Manage shipping options and pricing for different countries
           </p>
         </div>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <Dialog open={isCreateOpen} onOpenChange={handleDialogOpenChange}>
           <DialogTrigger asChild>
-            <Button onClick={() => {
-              setEditingMethod(null);
-              resetForm();
-            }}>
+            <Button>
               <Plus className="h-4 w-4 mr-2" />
               Add Shipping Method
             </Button>

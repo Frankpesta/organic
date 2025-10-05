@@ -6,7 +6,11 @@ import { Bell, Search, Menu } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const router = useRouter();
 
   return (
@@ -14,6 +18,7 @@ export function Header() {
       <button
         type="button"
         className="-m-2.5 p-2.5 text-muted-foreground lg:hidden"
+        onClick={onMenuClick}
       >
         <span className="sr-only">Open sidebar</span>
         <Menu className="h-6 w-6" aria-hidden="true" />

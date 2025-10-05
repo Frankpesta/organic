@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendShippingConfirmationEmail, ShippingConfirmationData } from "@/lib/email";
+import { sendShippingConfirmationEmail, ShippingConfirmationData } from "@/lib/services/emailService";
 
 export async function POST(request: NextRequest) {
   try {

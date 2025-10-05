@@ -6,7 +6,9 @@ import { getCountryByCode } from "@/lib/ppp";
 interface PPPContextType {
   selectedCountry: string | null;
   isLoading: boolean;
+  isPPPenabled: boolean;
   setSelectedCountry: (country: string | null) => void;
+  setPPPenabled: (enabled: boolean) => void;
 }
 
 const PPPContext = createContext<PPPContextType | undefined>(undefined);
@@ -14,6 +16,7 @@ const PPPContext = createContext<PPPContextType | undefined>(undefined);
 export function PPPProvider({ children }: { children: ReactNode }) {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPPPenabled, setPPPenabled] = useState(false);
 
   useEffect(() => {
     // Auto-detect country on mount
@@ -22,8 +25,12 @@ export function PPPProvider({ children }: { children: ReactNode }) {
         const response = await fetch('/api/detect-country');
         if (response.ok) {
           const data = await response.json();
-          if (data.country) {
-            setSelectedCountry(data.country);
+          if (data.countryCode) {
+            setSelectedCountry(data.countryCode);
+            // Auto-enable PPP for detected countries (except US)
+            if (data.countryCode !== 'US') {
+              setPPPenabled(true);
+            }
           }
         }
       } catch (error) {
@@ -39,7 +46,13 @@ export function PPPProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PPPContext.Provider value={{ selectedCountry, isLoading, setSelectedCountry }}>
+    <PPPContext.Provider value={{ 
+      selectedCountry, 
+      isLoading, 
+      isPPPenabled, 
+      setSelectedCountry, 
+      setPPPenabled 
+    }}>
       {children}
     </PPPContext.Provider>
   );

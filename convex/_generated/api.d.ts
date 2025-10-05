@@ -17,7 +17,7 @@ import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as cart from "../cart.js";
 import type * as categories from "../categories.js";
-import type * as email from "../email.js";
+import type * as emails from "../emails.js";
 import type * as files from "../files.js";
 import type * as orders from "../orders.js";
 import type * as products from "../products.js";
@@ -40,7 +40,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   cart: typeof cart;
   categories: typeof categories;
-  email: typeof email;
+  emails: typeof emails;
   files: typeof files;
   orders: typeof orders;
   products: typeof products;

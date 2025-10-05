@@ -7,9 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CountrySelector } from "@/components/CountrySelector";
 import { generateMetadata, generateStructuredData } from "@/lib/seo";
 import { calculatePPP, formatPrice } from "@/lib/ppp";
+import { PPToggle } from "@/components/PPPToggle";
+import { usePPP, PPPProvider } from "@/lib/contexts/PPPContext";
 import { 
   Star, 
   ShoppingCart, 
@@ -25,10 +26,10 @@ import { useCartStore } from "@/lib/stores/cartStore";
 import { WishlistButton } from "@/components/WishlistButton";
 import { toast } from "sonner";
 
-export default function ProductDetailPage() {
+function ProductDetailContent() {
   const params = useParams();
   const slug = params.slug as string;
-  const [selectedCountry, setSelectedCountry] = useState('US');
+  const { selectedCountry, isPPPenabled } = usePPP();
   const { addItem } = useCartStore();
 
   const product = useQuery(api.products.getProductBySlug, { slug });
@@ -41,7 +42,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const pppResult = calculatePPP(product.price, selectedCountry);
+  const pppResult = isPPPenabled && selectedCountry 
+    ? calculatePPP(product.price, selectedCountry) 
+    : { adjustedPrice: product.price, currency: 'USD', originalPrice: product.price };
   
   const handleAddToCart = () => {
     addItem({
@@ -153,18 +156,13 @@ export default function ProductDetailPage() {
                 <span className="text-muted-foreground">(4.8) • 24 reviews</span>
               </div>
               <div className="space-y-4">
-                {/* Country Selector */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Select your country for local pricing:
-                  </label>
-                  <CountrySelector
-                    selectedCountry={selectedCountry}
-                    onCountryChange={setSelectedCountry}
-                    showPrice={true}
-                    samplePrice={product.price}
-                  />
-                </div>
+                {/* PPP Toggle */}
+                <PPPToggle
+                  isEnabled={isPPPenabled}
+                  onToggle={() => {}} // This will be handled by the context
+                  detectedCountry={selectedCountry}
+                  samplePrice={product.price}
+                />
 
                 {/* Price Display */}
                 <div className="flex items-center space-x-4">
@@ -334,5 +332,13 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductDetailPage() {
+  return (
+    <PPPProvider>
+      <ProductDetailContent />
+    </PPPProvider>
   );
 }

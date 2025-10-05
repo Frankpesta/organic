@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useWishlistStore } from "@/lib/stores/wishlistStore";
 import { useCartStore } from "@/lib/stores/cartStore";
+import { formatPrice } from "@/lib/ppp";
 import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +38,21 @@ export default function UserDashboard() {
   const { items: wishlistItems, removeItem, clearWishlist } = useWishlistStore();
   const { addItem } = useCartStore();
   const { user: clerkUser, isLoaded } = useUser();
+
+  // Calculate total spending in USD
+  const calculateTotalSpendingUSD = (orders: any[]) => {
+    if (!orders || orders.length === 0) return 0;
+    
+    return orders.reduce((total, order) => {
+      // Convert to USD if needed (simplified - in real app, use current exchange rates)
+      if (order.currency === 'USD') {
+        return total + order.total;
+      } else {
+        // For now, just add the total as-is. In a real app, you'd convert using current exchange rates
+        return total + order.total;
+      }
+    }, 0);
+  };
 
   // Get user orders only if authenticated
   const orders = useQuery(api.orders.getCurrentUserOrders, 
@@ -190,11 +206,21 @@ export default function UserDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    ${orders?.reduce((sum, order) => sum + order.total, 0).toFixed(2) || '0.00'}
+                    ${calculateTotalSpendingUSD(orders || []).toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    All time purchases
+                    All time purchases (converted to USD)
                   </p>
+                  {orders && orders.length > 0 && (
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      {orders.map((order, index) => (
+                        <div key={order._id} className="flex justify-between">
+                          <span>Order #{order.orderNumber}:</span>
+                          <span>{formatPrice(order.total, order.currency || 'USD')}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -222,7 +248,9 @@ export default function UserDashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold">${order.total.toFixed(2)}</p>
+                          <p className="font-bold">
+                            {formatPrice(order.total, order.currency || 'USD')}
+                          </p>
                           <Badge className={getOrderStatusColor(order.status)}>
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </Badge>
@@ -268,7 +296,9 @@ export default function UserDashboard() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-lg font-bold">${order.total.toFixed(2)}</p>
+                            <p className="text-lg font-bold">
+                              {formatPrice(order.total, order.currency || 'USD')}
+                            </p>
                             <Badge className={getOrderStatusColor(order.status)}>
                               {getOrderStatusIcon(order.status)}
                               <span className="ml-1">

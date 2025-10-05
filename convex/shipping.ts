@@ -30,6 +30,14 @@ export const getShippingMethodsByCountry = query({
   },
 });
 
+// Get single shipping method by ID
+export const getShippingMethod = query({
+  args: { methodId: v.id("shippingMethods") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.methodId);
+  },
+});
+
 // Admin: Create shipping method
 export const createShippingMethod = mutation({
   args: {

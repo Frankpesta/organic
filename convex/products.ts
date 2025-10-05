@@ -138,6 +138,66 @@ export const getProductBySlug = query({
   },
 });
 
+// Get single product by ID
+export const getProduct = query({
+  args: { productId: v.id("products") },
+  handler: async (ctx, args) => {
+    const product = await ctx.db.get(args.productId);
+
+    if (!product) return null;
+
+    // Convert storage IDs to URLs for the product
+    let imageUrls: (string | null)[] = [];
+    
+    if (product.images && product.images.length > 0) {
+      // Check if images are storage IDs or URLs (backward compatibility)
+      if (typeof product.images[0] === 'string' && product.images[0].startsWith('http')) {
+        // Old format: direct URLs
+        imageUrls = product.images as string[];
+      } else {
+        // New format: storage IDs
+        imageUrls = await Promise.all(
+          product.images.map(async (storageId) => {
+            try {
+              const url = await ctx.storage.getUrl(storageId);
+              return url;
+            } catch (error) {
+              console.error("Error getting URL for storage ID:", storageId, error);
+              return null;
+            }
+          })
+        );
+      }
+    }
+
+    // Get product variants
+    const variants = await ctx.db
+      .query("productVariants")
+      .filter((q) => q.eq(q.field("productId"), product._id))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .collect();
+
+    // Get product reviews
+    const reviews = await ctx.db
+      .query("reviews")
+      .filter((q) => q.eq(q.field("productId"), product._id))
+      .filter((q) => q.eq(q.field("isApproved"), true))
+      .order("desc")
+      .take(10);
+
+    // Get category
+    const category = await ctx.db.get(product.categoryId);
+
+    return {
+      ...product,
+      imageUrls: imageUrls.filter(Boolean), // Remove null URLs
+      variants,
+      reviews,
+      category,
+    };
+  },
+});
+
 // Get featured products
 export const getFeaturedProducts = query({
   args: { limit: v.optional(v.number()) },

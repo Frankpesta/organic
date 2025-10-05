@@ -15,6 +15,7 @@ import { calculatePPP, formatPrice } from "@/lib/ppp";
 import { PPPProvider, usePPP } from "@/lib/contexts/PPPContext";
 import { createOrder } from "@/lib/actions/orders";
 import { createCheckoutSessionAction } from "@/lib/actions/stripe";
+import { PPTToggle } from "@/components/PPPToggle";
 import { 
   CreditCard, 
   Truck, 
@@ -33,7 +34,7 @@ function CheckoutContent() {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const { user, isLoaded } = useUser();
   const router = useRouter();
-  const { selectedCountry, isLoading: pppLoading } = usePPP();
+  const { selectedCountry, isPPPenabled, setPPPenabled, isLoading: pppLoading } = usePPP();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
@@ -91,6 +92,13 @@ function CheckoutContent() {
     }));
   };
 
+  // Update shipping info country when PPP country changes
+  useEffect(() => {
+    if (selectedCountry) {
+      setShippingInfo(prev => ({ ...prev, country: selectedCountry }));
+    }
+  }, [selectedCountry]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -111,7 +119,7 @@ function CheckoutContent() {
       }
 
       const subtotal = getTotalPrice();
-      const pppResult = selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
+      const pppResult = isPPPenabled && selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
         adjustedPrice: subtotal, 
         currency: 'USD' 
       };
@@ -121,7 +129,7 @@ function CheckoutContent() {
       // Create order first using Server Action
       const orderResult = await createOrder({
         items: items.map(item => {
-          const itemPPP = selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
+          const itemPPP = isPPPenabled && selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
             adjustedPrice: item.price, 
             currency: 'USD' 
           };
@@ -165,7 +173,7 @@ function CheckoutContent() {
         shipping,
         discount: 0,
         total,
-        currency: 'usd',
+        currency: pppResult.currency.toLowerCase(),
         notes: orderNotes,
         deliveryMethodId: selectedDeliveryMethod,
       });
@@ -179,7 +187,7 @@ function CheckoutContent() {
         orderId: orderResult.orderId,
         items: items.map(item => {
           // Apply PPP pricing to Stripe checkout
-          const itemPPP = selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
+          const itemPPP = isPPPenabled && selectedCountry ? calculatePPP(item.price, selectedCountry) : { 
             adjustedPrice: item.price, 
             currency: 'USD' 
           };
@@ -373,7 +381,15 @@ function CheckoutContent() {
                 </div>
               </div>
 
-              {/* PPP pricing is automatically applied based on your location */}
+              {/* PPP Toggle */}
+              <div className="mt-6">
+                <PPTToggle
+                  isEnabled={isPPPenabled}
+                  onToggle={setPPPenabled}
+                  detectedCountry={selectedCountry}
+                  samplePrice={getTotalPrice()}
+                />
+              </div>
             </div>
 
             {/* Delivery Method Selection */}
@@ -526,7 +542,7 @@ function CheckoutContent() {
               <div className="space-y-3 border-t border-border pt-4">
                 {(() => {
                   const subtotal = getTotalPrice();
-                  const subtotalPPP = selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
+                  const subtotalPPP = isPPPenabled && selectedCountry ? calculatePPP(subtotal, selectedCountry) : { 
                     adjustedPrice: subtotal, 
                     currency: 'USD' 
                   };
@@ -541,7 +557,7 @@ function CheckoutContent() {
                       const isFree = selectedMethod.freeShippingThreshold && subtotal >= selectedMethod.freeShippingThreshold;
                       if (!isFree) {
                         shipping = selectedMethod.price;
-                        shippingPPP = selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
+                        shippingPPP = isPPPenabled && selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
                           adjustedPrice: shipping, 
                           currency: 'USD' 
                         };
@@ -550,19 +566,19 @@ function CheckoutContent() {
                   } else {
                     // Fallback to default shipping
                     shipping = subtotal >= 50 ? 0 : 9.99;
-                    shippingPPP = selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
+                    shippingPPP = isPPPenabled && selectedCountry ? calculatePPP(shipping, selectedCountry) : { 
                       adjustedPrice: shipping, 
                       currency: 'USD' 
                     };
                   }
                   
                   const tax = subtotal * 0.08;
-                  const taxPPP = selectedCountry ? calculatePPP(tax, selectedCountry) : { 
+                  const taxPPP = isPPPenabled && selectedCountry ? calculatePPP(tax, selectedCountry) : { 
                     adjustedPrice: tax, 
                     currency: 'USD' 
                   };
                   const total = subtotal + shipping + tax;
-                  const totalPPP = selectedCountry ? calculatePPP(total, selectedCountry) : { 
+                  const totalPPP = isPPPenabled && selectedCountry ? calculatePPP(total, selectedCountry) : { 
                     adjustedPrice: total, 
                     currency: 'USD' 
                   };

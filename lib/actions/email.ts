@@ -1,6 +1,6 @@
 "use server";
 
-import { sendWelcomeEmail, sendOrderConfirmationEmail, sendShippingConfirmationEmail } from "@/lib/email";
+import { sendWelcomeEmail, sendOrderConfirmationEmail, sendShippingConfirmationEmail } from "@/lib/services/emailService";
 
 export async function sendWelcomeEmailAction(customerName: string, customerEmail: string) {
   try {

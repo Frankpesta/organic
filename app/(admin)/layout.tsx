@@ -8,7 +8,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Manrope } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import ConvexClientProvider from '@/components/ConvexClientProvider';
-import { Sidebar } from '@/components/admin/Sidebar';
+import { Sidebar, MobileSidebar } from '@/components/admin/Sidebar';
 import { Header } from '@/components/admin/Header';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from 'sonner';
@@ -24,6 +24,7 @@ const manrope = Manrope({
 
 function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const adminCheck = useQuery(api.auth.isAdmin);
 
@@ -37,6 +38,23 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
       }
     }
   }, [adminCheck, router]);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [router]);
+
+  // Close mobile menu on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMobileMenuOpen]);
 
   if (isLoading || adminCheck === undefined) {
     return (
@@ -69,8 +87,12 @@ function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
+      <MobileSidebar 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
       <div className="lg:pl-64">
-        <Header />
+        <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
         <main className="py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {children}

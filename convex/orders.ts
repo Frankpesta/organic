@@ -46,17 +46,24 @@ export const getCurrentUserOrders = query({
       .order("desc")
       .collect();
 
-    // Get product details for each order
+    // Get order items and product details for each order
     const ordersWithProducts = await Promise.all(
       orders.map(async (order) => {
+        // First, get the order items
+        const items = await ctx.db
+          .query("orderItems")
+          .filter((q) => q.eq(q.field("orderId"), order._id))
+          .collect();
+
+        // Then get product details for each item
         const itemsWithProducts = await Promise.all(
-          order.items.map(async (item) => {
+          items.map(async (item) => {
             const product = await ctx.db.get(item.productId);
             return {
               ...item,
               product: product ? {
                 name: product.name,
-                image: product.images?.[0] || null,
+                image: product.images && product.images.length > 0 ? product.images[0] : null,
                 slug: product.slug,
               } : null,
             };
@@ -83,6 +90,26 @@ export const getOrderByNumber = query({
       .filter((q) => q.eq(q.field("orderNumber"), args.orderNumber))
       .first();
 
+    if (!order) return null;
+
+    const items = await ctx.db
+      .query("orderItems")
+      .filter((q) => q.eq(q.field("orderId"), order._id))
+      .collect();
+
+    return {
+      ...order,
+      items,
+    };
+  },
+});
+
+// Get order by ID
+export const getOrderById = query({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    const order = await ctx.db.get(args.orderId);
+    
     if (!order) return null;
 
     const items = await ctx.db
