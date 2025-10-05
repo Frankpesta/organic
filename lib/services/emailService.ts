@@ -28,19 +28,21 @@ export interface OrderConfirmationData {
   shippingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
   billingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
 }
@@ -60,10 +62,11 @@ export interface ShippingConfirmationData {
   shippingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
 }
@@ -99,19 +102,21 @@ export async function sendOrderConfirmationEmail({
   shippingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
   billingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
 }) {
@@ -122,13 +127,11 @@ export async function sendOrderConfirmationEmail({
       orderNumber,
       customerName,
       orderDate,
-      items,
-      subtotal,
-      shipping,
-      tax,
       total,
+      currency: "USD", // Default currency
+      items,
       shippingAddress,
-      billingAddress,
+      deliveryMethod: undefined, // No delivery method info available
     }),
   });
 }
@@ -145,7 +148,8 @@ export async function sendWelcomeEmail({
     to,
     subject: "Welcome to Helen's Beauty Secret!",
     react: WelcomeEmail({
-      firstName,
+      customerName: firstName,
+      customerEmail: to,
     }),
   });
 }
@@ -175,10 +179,11 @@ export async function sendShippingConfirmationEmail({
   shippingAddress: {
     firstName: string;
     lastName: string;
-    address: string;
+    address1: string;
+    address2?: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
   };
 }) {

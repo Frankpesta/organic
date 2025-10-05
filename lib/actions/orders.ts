@@ -138,15 +138,35 @@ export async function createOrder(formData: {
       // Send order confirmation email
       try {
         await sendOrderConfirmationEmail({
+          to: convexUser.email,
           orderNumber: order.orderNumber,
           customerName: `${formData.shippingAddress.firstName} ${formData.shippingAddress.lastName}`,
-          customerEmail: convexUser.email,
           orderDate: new Date().toLocaleDateString(),
-          total: formData.total,
-          currency: formData.currency,
           items: productDetails,
-          shippingAddress: formData.shippingAddress,
-          deliveryMethod,
+          subtotal: formData.total * 0.85, // Estimate subtotal (85% of total)
+          shipping: formData.total * 0.10, // Estimate shipping (10% of total)
+          tax: formData.total * 0.05, // Estimate tax (5% of total)
+          total: formData.total,
+          shippingAddress: {
+            firstName: formData.shippingAddress.firstName,
+            lastName: formData.shippingAddress.lastName,
+            address1: formData.shippingAddress.address1,
+            address2: (formData.shippingAddress as any).address2 || undefined,
+            city: formData.shippingAddress.city,
+            state: formData.shippingAddress.state,
+            postalCode: formData.shippingAddress.postalCode,
+            country: formData.shippingAddress.country,
+          },
+          billingAddress: {
+            firstName: formData.shippingAddress.firstName,
+            lastName: formData.shippingAddress.lastName,
+            address1: formData.shippingAddress.address1,
+            address2: (formData.shippingAddress as any).address2 || undefined,
+            city: formData.shippingAddress.city,
+            state: formData.shippingAddress.state,
+            postalCode: formData.shippingAddress.postalCode,
+            country: formData.shippingAddress.country,
+          },
         });
       } catch (emailError) {
         console.error("Failed to send order confirmation email:", emailError);

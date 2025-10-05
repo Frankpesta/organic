@@ -50,7 +50,19 @@ export async function sendOrderConfirmationEmailAction(data: {
   };
 }) {
   try {
-    const result = await sendOrderConfirmationEmail(data);
+    const result = await sendOrderConfirmationEmail({
+      to: data.customerEmail,
+      orderNumber: data.orderNumber,
+      customerName: data.customerName,
+      orderDate: data.orderDate,
+      items: data.items,
+      subtotal: data.total * 0.85, // Estimate subtotal (85% of total)
+      shipping: data.total * 0.10, // Estimate shipping (10% of total)
+      tax: data.total * 0.05, // Estimate tax (5% of total)
+      total: data.total,
+      shippingAddress: data.shippingAddress,
+      billingAddress: data.shippingAddress,
+    });
     return { success: result.success, error: result.error };
   } catch (error) {
     console.error("Error sending order confirmation email:", error);
@@ -81,7 +93,25 @@ export async function sendShippingConfirmationEmailAction(data: {
   };
 }) {
   try {
-    const result = await sendShippingConfirmationEmail(data);
+    const result = await sendShippingConfirmationEmail({
+      to: data.customerEmail,
+      orderNumber: data.orderNumber,
+      customerName: data.customerName,
+      trackingNumber: data.trackingNumber || "TBD",
+      carrier: data.carrier || "Standard Shipping",
+      estimatedDelivery: data.estimatedDelivery,
+      items: data.items,
+      shippingAddress: {
+        firstName: data.shippingAddress.firstName,
+        lastName: data.shippingAddress.lastName,
+        address1: data.shippingAddress.address1,
+        address2: data.shippingAddress.address2,
+        city: data.shippingAddress.city,
+        state: data.shippingAddress.state,
+        postalCode: data.shippingAddress.postalCode,
+        country: data.shippingAddress.country,
+      },
+    });
     return { success: result.success, error: result.error };
   } catch (error) {
     console.error("Error sending shipping confirmation email:", error);
