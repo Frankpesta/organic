@@ -114,7 +114,7 @@ export default function ContentPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Auto-generate slug from title
-    if (field === "title") {
+    if (field === "title" && typeof value === "string") {
       const slug = value
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
